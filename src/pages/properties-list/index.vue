@@ -1,8 +1,10 @@
 <template>
-	<div></div>
+	<PropertiesList />
 </template>
 
 <script setup>
+import PropertiesList from "@/app/properties-list";
+
 definePageMeta({
 	layout: "default",
 });

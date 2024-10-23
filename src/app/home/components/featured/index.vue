@@ -61,7 +61,7 @@ import { type FeaturedProperty } from "~/types/FeaturedProperty";
 
 const featuredProperties = ref<FeaturedProperty[]>(featuredPropertiesMock);
 const currentIndex = ref(0);
-const visibleCount = 3;
+const visibleCount = 4;
 
 const visibleProperties = computed(() => {
 	return featuredProperties.value.slice(

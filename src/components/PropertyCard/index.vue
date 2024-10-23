@@ -1,12 +1,12 @@
 <template>
-	<v-card width="450px">
+	<v-card width="320px">
 		<v-img
 			:src="props.featuredProperty.image"
 			alt="props.featuredProperty.title"
 			cover
 		/>
 		<div class="pa-5">
-			<h3 class="card-title mb-1">{{ props.featuredProperty.title }}</h3>
+			<h3 class="card-title mb-auto">{{ props.featuredProperty.title }}</h3>
 			<p class="montserrat-title">
 				{{ props.featuredProperty.neighborhood }}
 			</p>
@@ -15,26 +15,27 @@
 			</p>
 			<div class="d-flex align-end justify-space-between">
 				<div class="d-flex flex-column ga-2">
-					<p class="d-flex align-center ga-2">
+					<small class="d-flex align-center ga-2">
 						<v-icon>mdi-bed-double-outline</v-icon>
 						{{ props.featuredProperty.bedrooms }}
 						dormitório{{ props.featuredProperty.bedrooms > 1 ? "s" : "" }}
-					</p>
-					<p class="d-flex align-center ga-2">
+					</small>
+					<small class="d-flex align-center ga-2">
 						<v-icon>mdi-toilet</v-icon>
 						{{ props.featuredProperty.bathrooms }}
 						banheiro{{ props.featuredProperty.bathrooms > 1 ? "s" : "" }}
-					</p>
-					<p class="d-flex align-center ga-2">
+					</small>
+					<small class="d-flex align-center ga-2">
 						<v-icon>mdi-car</v-icon>
 						{{ props.featuredProperty.garage }}
 						vagas de garage{{ props.featuredProperty.garage > 1 ? "ns" : "m" }}
-					</p>
+					</small>
 				</div>
+
 				<v-btn
 					variant="text"
 					size="small"
-					class="d-flex align-items"
+					class="d-flex align-center"
 					append-icon="mdi-arrow-right-thin"
 				>
 					Veja mais
