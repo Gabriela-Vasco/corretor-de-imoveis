@@ -1,8 +1,10 @@
 <template>
-	<div></div>
+	<Contact />
 </template>
 
 <script setup>
+import Contact from "@/app/contact";
+
 definePageMeta({
 	layout: "no-cta",
 });

@@ -1,10 +1,27 @@
 <template>
 	<v-card width="320px">
-		<v-img
-			:src="props.featuredProperty.image"
-			alt="props.featuredProperty.title"
-			cover
-		/>
+		<div class="coverImage">
+			<v-img
+				:src="props.featuredProperty.image"
+				:alt="props.featuredProperty.title"
+				cover
+			/>
+			<v-btn
+				class="btnFavorite mt-2 mr-2"
+				:icon="true"
+				color="secondary-darken-1"
+				size="small"
+				flat
+				@click="favoriteProperty"
+			>
+				<v-icon>
+					{{ props.featuredProperty.favorited ? "mdi-heart" : "mdi-heart-outline" }}
+				</v-icon>
+			</v-btn>
+			<div class="bg-primary propertyCode px-3 py-2 rounded-te">
+				<p>Cod: {{ props.featuredProperty.code }}</p>
+			</div>
+		</div>
 		<div class="pa-5">
 			<h3 class="card-title mb-auto">{{ props.featuredProperty.title }}</h3>
 			<p class="montserrat-title">
@@ -53,10 +70,30 @@ const props = defineProps({
 function toMoney(money: number) {
 	return money.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
+
+function favoriteProperty() {
+	console.log("Favoritou a propriedade");
+}
 </script>
 
 <style lang="scss" scoped>
 .card-title {
 	font-size: 22px;
+}
+
+.coverImage {
+	position: relative;
+}
+
+.propertyCode {
+	position: absolute;
+	bottom: 0;
+	width: fit-content;
+}
+
+.btnFavorite {
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 </style>

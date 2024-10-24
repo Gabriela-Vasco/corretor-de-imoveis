@@ -129,6 +129,7 @@
 		<div>
 			<p class="text-secondary mb-4">Tipo do imóvel</p>
 			<v-select
+				v-model="type"
 				label=""
 				min-width="100%"
 				:items="['Residencial', 'Comercial']"
@@ -140,6 +141,7 @@
 		<div>
 			<p class="text-secondary mb-4">Bairros</p>
 			<v-select
+				v-model="neighborhood"
 				label=""
 				min-width="100%"
 				:items="['Centro', 'João Paulo']"
@@ -151,6 +153,7 @@
 		<div>
 			<p class="text-secondary mb-4">Código</p>
 			<v-text-field
+				v-model="code"
 				label=""
 				variant="solo-filled"
 				density="compact"
@@ -158,19 +161,70 @@
 			/>
 		</div>
 
-		<v-btn class="mt-8" color="secondary">Buscar</v-btn>
+		<v-btn class="mt-8" color="secondary" @click="searchFilteredProperties">
+			Buscar
+		</v-btn>
+
+		<v-btn class="mt-6" color="light" @click="clearFilterConditions">
+			Limpar
+		</v-btn>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { type FilterConditions } from "@/types";
 
-const dorms = ref(0);
-const suites = ref(0);
-const bathrooms = ref(0);
-const garages = ref(0);
-const minPrice = ref(null);
-const maxPrice = ref(null);
+const dorms = ref<number>(-1);
+const suites = ref<number>(-1);
+const bathrooms = ref<number>(-1);
+const garages = ref<number>(-1);
+const minPrice = ref<string | null>(null);
+const maxPrice = ref<string | null>(null);
+const type = ref<string | null>(null);
+const neighborhood = ref<string | null>(null);
+const code = ref<string | null>(null);
+
+const emit = defineEmits(["filterProperties"]);
+
+function searchFilteredProperties() {
+	const obj: FilterConditions = {
+		dorms: dorms.value,
+		suites: suites.value,
+		bathrooms: bathrooms.value,
+		garages: garages.value,
+		minPrice: minPrice.value,
+		maxPrice: maxPrice.value,
+		type: type.value,
+		neighborhood: neighborhood.value,
+		code: code.value,
+	};
+
+	for (const item in obj) {
+		if (
+			!obj[item as keyof FilterConditions] ||
+			obj[item as keyof FilterConditions] === -1
+		) {
+			delete obj[item as keyof FilterConditions];
+		}
+	}
+
+	emit("filterProperties", obj);
+}
+
+function clearFilterConditions() {
+	dorms.value = -1;
+	suites.value = -1;
+	bathrooms.value = -1;
+	garages.value = -1;
+	minPrice.value = null;
+	maxPrice.value = null;
+	type.value = null;
+	neighborhood.value = null;
+	code.value = null;
+
+	searchFilteredProperties();
+}
 </script>
 
 <style scoped lang="scss">

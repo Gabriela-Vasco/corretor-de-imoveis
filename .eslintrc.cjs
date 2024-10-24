@@ -4,8 +4,6 @@ module.exports = {
 		es2021: true,
 	},
 	extends: [
-		// "standard-with-typescript",
-		// "plugin:vue/vue3-essential"
 		"eslint:recommended",
 		"plugin:vue/vue3-recommended",
 		"@nuxtjs/eslint-config-typescript",
@@ -28,19 +26,17 @@ module.exports = {
 		sourceType: "module",
 	},
 	rules: {
-		indent: ["error", "tab"],
+		// indent: ["error", "tab"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
-
 		"vue/multi-word-component-names": "off",
 		"vue/singleline-html-element-content-newline": "off",
 		"vue/multiline-html-element-content-newline": "error",
-
 		"prettier/prettier": [
 			"error",
 			{
-				tabWidth: 1,
-				useTabs: true,
+				tabWidth: 1, // This can be kept as is
+				useTabs: true, // Ensure you are using tabs
 				singleQuote: false,
 				semi: true,
 				printWidth: 80,

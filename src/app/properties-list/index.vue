@@ -13,42 +13,145 @@
 			<div class="d-flex align-center justify-center ml-auto mr-10">
 				<span style="text-wrap: nowrap">Ordenar por:</span>
 				<v-select
+					v-model="sortOption"
 					label=""
 					class="pt-5 mx-5"
 					width="180px"
 					:items="['Maior preço', 'Menor preço', 'A-Z', 'Z-A']"
-					placeholder="Maior preço"
 					variant="solo"
 					density="compact"
 				></v-select>
 			</div>
 		</div>
 
-		<div class="d-flex align-start justify-space-between mx-12 my-10 ga-8">
-			<SearchBar />
+		<div class="d-flex align-start justify-start mx-12 my-10 ga-8">
+			<SearchBar @filter-properties="filterProperties" />
 
-			<div>
+			<div v-if="paginatedProperties.length" class="w-100">
 				<div class="d-flex ga-10 flex-wrap mb-10">
 					<PropertyCard
-						v-for="property in featuredPropertiesMock"
-						:key="property.code"
+						v-for="(property, index) in paginatedProperties"
+						:key="index"
 						:featured-property="property"
 						class="property-card"
 					/>
 				</div>
-				<v-pagination v-model="page" :length="4" rounded></v-pagination>
+				<div class="d-flex align-center justify-center">
+					<v-pagination
+						v-model="page"
+						:length="pageCount"
+						class="mx-auto w-100"
+						width="180px"
+						rounded
+					></v-pagination>
+					<v-select
+						v-model="itemsPerPage"
+						label="Items por página"
+						class="pt-5"
+						width="130px"
+						:items="[5, 10, 15, 20]"
+						variant="outlined"
+						density="compact"
+					></v-select>
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { type FilterConditions } from "@/types";
 import { featuredPropertiesMock } from "@/app/home/components/featured/featuredPropertiesMock";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
 
-const page = ref();
+const page = ref(1);
+const itemsPerPage = ref(10);
+const sortOption = ref("Maior preço");
+const filterConditions = ref<FilterConditions>();
+
+const sortedProperties = computed(() => {
+	const properties = [...featuredPropertiesMock];
+
+	switch (sortOption.value) {
+		case "Maior preço":
+			return properties.sort((a, b) => b.price - a.price);
+		case "Menor preço":
+			return properties.sort((a, b) => a.price - b.price);
+		case "A-Z":
+			return properties.sort((a, b) => a.title.localeCompare(b.title));
+		case "Z-A":
+			return properties.sort((a, b) => b.title.localeCompare(a.title));
+		default:
+			return properties;
+	}
+});
+
+const filteredProperties = computed(() => {
+	const properties = [...sortedProperties.value];
+
+	return properties.filter((property) => {
+		for (const key in filterConditions.value) {
+			if (filterConditions.value[key] !== null) {
+				if (key === "dorms" && property.dorms !== filterConditions.value[key]) {
+					return false;
+				}
+				if (key === "suites" && property.suites !== filterConditions.value[key]) {
+					return false;
+				}
+				if (
+					key === "bathrooms" &&
+					property.bathrooms !== filterConditions.value[key]
+				) {
+					return false;
+				}
+				if (key === "garages" && property.garages !== filterConditions.value[key]) {
+					return false;
+				}
+				if (
+					key === "minPrice" &&
+					property.price < parseInt(filterConditions.value[key])
+				) {
+					return false;
+				}
+				if (
+					key === "maxPrice" &&
+					property.price > parseInt(filterConditions.value[key])
+				) {
+					return false;
+				}
+				if (key === "type" && property.type !== filterConditions.value[key]) {
+					return false;
+				}
+				if (
+					key === "neighborhood" &&
+					property.neighborhood !== filterConditions.value[key]
+				) {
+					return false;
+				}
+				if (key === "code" && property.code !== filterConditions.value[key]) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	});
+});
+
+const paginatedProperties = computed(() => {
+	const start = (page.value - 1) * itemsPerPage.value;
+	return filteredProperties.value.slice(start, start + itemsPerPage.value);
+});
+
+const pageCount = computed(() =>
+	Math.ceil(filteredProperties.value.length / itemsPerPage.value),
+);
+
+function filterProperties(obj: FilterConditions) {
+	filterConditions.value = obj;
+}
 </script>
 
 <style scoped></style>
