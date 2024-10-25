@@ -1,0 +1,367 @@
+<template>
+	<div>
+		<div
+			v-if="visibleProperties.length"
+			class="d-flex align-center justify-center w-100 py-2 mt-12 imageCarousel"
+			style="height: 480px"
+		>
+			<v-btn
+				icon
+				flat
+				size="90px"
+				class="d-flex align-center justify-center btnLeft"
+				:disabled="currentIndex === 0"
+				@click="prevProperty"
+			>
+				<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+					mdi-menu-left
+				</v-icon>
+			</v-btn>
+
+			<div class="d-flex justify-space-between align-center w-100 overflow-hidden">
+				<div ref="cardsContainer" class="w-100 d-flex justify-space-between">
+					<v-img
+						v-for="(image, index) in visibleProperties"
+						:key="index"
+						:src="image"
+						cover
+						style="height: 100%; max-height: 480px"
+					/>
+				</div>
+			</div>
+
+			<v-btn
+				icon
+				flat
+				size="90px"
+				class="d-flex align-center justify-center btnRight"
+				:disabled="currentIndex + visibleCount >= propertyImages.length"
+				@click="nextProperty"
+			>
+				<v-icon
+					size="120px"
+					:color="
+						currentIndex + visibleCount >= propertyImages.length ? 'gray' : 'primary'
+					"
+				>
+					mdi-menu-right
+				</v-icon>
+			</v-btn>
+		</div>
+		<div class="mainContent">
+			<div class="border-md rounded-lg px-2 py-1 text-center" style="width: 100px">
+				<span>Cód: 777</span>
+			</div>
+			<div class="d-flex justify-space-between align-center my-3">
+				<h2 class="montserrat-title font-weight-medium">Apartamento de exemplo</h2>
+				<v-btn icon variant="text">
+					<v-icon size="48px" color="secondary-darken-1">mdi-heart-outline</v-icon>
+				</v-btn>
+			</div>
+			<v-divider
+				color="dark"
+				class="border-opacity-75"
+				style="width: 1000px"
+				:thickness="1"
+			/>
+			<p class="w-75 text-justify my-8">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+				tempor incididunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+				sed do eiusmod tempor incididunt. Lorem ipsum dolor sit amet, consectetur
+				adipiscing elit, sed do eiusmod tempor incididunt. Lorem ipsum dolor sit
+				amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. Lorem
+				ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+				incididunt.
+			</p>
+
+			<h3 class="montserrat-title font-weight-medium mb-2">
+				Bairro - Florianópolis/SC
+			</h3>
+			<h4 class="montserrat-title font-weight-medium">R$ 100.000,00 - Venda</h4>
+
+			<div style="border: 1px solid black" class="fit-content my-16 px-10">
+				<div class="px-16 py-12 infoList">
+					<span><strong>Área total</strong> 185,00 m²</span>
+					<span class="d-flex align-center ga-2">
+						<v-icon>mdi-bed-double-outline</v-icon> 3 dormitórios</span
+					>
+					<span class="d-flex align-center ga-2">
+						<v-icon>mdi-car</v-icon> 1 vaga de garagem</span
+					>
+					<span><strong>Condomínio</strong> R$1.500,00</span>
+					<span><strong>Área privativa</strong> 140,00 m²</span>
+					<span class="d-flex align-center ga-2">
+						<v-icon>mdi-toilet</v-icon> 2 banheiros</span
+					>
+					<span class="d-flex align-center ga-2">
+						<v-icon>mdi-shower-head</v-icon> 2 suítes</span
+					>
+					<span><strong>IPTU</strong> R$ 3.500,00</span>
+				</div>
+			</div>
+
+			<div class="mt-100 d-flex align-start justify-space-between ga-16">
+				<div>
+					<div class="fit-content">
+						<h3
+							class="montserrat-title font-weight-medium mr-5"
+							style="font-size: 22px"
+						>
+							Infraestrutura e outras características
+						</h3>
+						<v-divider color="grey" class="border-opacity-50" :thickness="1" />
+					</div>
+					<v-list lines="one" class="list mt-6 py-0 fit-content">
+						<v-list-item
+							v-for="(item, index) in items"
+							:key="index"
+							:title="item"
+							prepend-icon="mdi-circle-small"
+							class="px-0"
+						></v-list-item>
+					</v-list>
+					<v-btn variant="text" class="px-0 mt-4 ml-2">
+						<span class="text-decoration-underline">
+							Veja mais <v-icon class="mb-1">mdi-menu-right</v-icon></span
+						>
+					</v-btn>
+				</div>
+				<div class="fit-content mx-auto">
+					<div class="fit-content">
+						<h3
+							class="montserrat-title font-weight-medium mr-5"
+							style="font-size: 22px"
+						>
+							Detalhes
+						</h3>
+						<v-divider color="grey" class="border-opacity-50" :thickness="1" />
+					</div>
+					<div class="d-flex align-center justify-space-between my-8 ga-12">
+						<div class="d-flex flex-column align-center">
+							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+								<v-icon color="secondary-darken-1" size="35px">
+									mdi-camera-outline
+								</v-icon>
+							</v-btn>
+							<p>Fotos</p>
+						</div>
+
+						<div class="d-flex flex-column align-center">
+							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+								<v-icon color="secondary-darken-1" size="35px">
+									mdi-play-outline
+								</v-icon>
+							</v-btn>
+							<p>Vídeo</p>
+						</div>
+
+						<div class="d-flex flex-column align-center">
+							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+								<v-icon color="secondary-darken-1" size="35px">
+									mdi-map-marker-outline
+								</v-icon>
+							</v-btn>
+							<p>Mapa</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="d-flex flex-column align-center mt-120">
+				<h2
+					class="montserrat-title font-weight-medium mr-5"
+					style="font-size: 24px"
+				>
+					Imóveis relacionados
+				</h2>
+				<v-divider
+					color="grey"
+					class="border-opacity-50 mb-8 mt-3"
+					style="width: 540px"
+					:thickness="1"
+				/>
+				<div class="d-flex -justify-space-between align-center ga-10">
+					<PropertyCard
+						v-for="property in relatedProperties"
+						:key="property.code"
+						:featured-property="property"
+						class="property-card"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, nextTick } from "vue";
+import { animate } from "motion";
+
+const visibleCount = 3;
+
+const items = ref([
+	"Elevador",
+	"Piscina",
+	"Salão de festas",
+	"Churrasqueira",
+	"Academia",
+	"Portaria 24h",
+]);
+
+const cardsContainer = ref<HTMLElement | null>(null);
+const currentIndex = ref(0);
+
+const visibleProperties = computed(() => {
+	return propertyImages.value.slice(
+		currentIndex.value,
+		currentIndex.value + visibleCount,
+	);
+});
+
+const propertyImages = ref([
+	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+]);
+
+const relatedProperties = computed(() => [
+	{
+		code: 777,
+		title: "Apartamento de exemplo",
+		neighborhood: "Bairro - Florianópolis/SC",
+		price: 100000,
+		bedrooms: 3,
+		bathrooms: 2,
+		garage: 1,
+		image:
+			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	},
+	{
+		code: 778,
+		title: "Apartamento de exemplo",
+		neighborhood: "Bairro - Florianópolis/SC",
+		price: 200000,
+		bedrooms: 4,
+		bathrooms: 3,
+		garage: 2,
+		image:
+			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	},
+	{
+		code: 779,
+		title: "Apartamento de exemplo",
+		neighborhood: "Bairro - Florianópolis/SC",
+		price: 300000,
+		bedrooms: 5,
+		bathrooms: 4,
+		garage: 3,
+		image:
+			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
+	},
+]);
+
+const prevProperty = () => {
+	if (currentIndex.value > 0) {
+		animateCards("left");
+
+		currentIndex.value = Math.max(currentIndex.value - visibleCount, 0);
+
+		nextTick(() => {
+			animateCardsIn("left");
+		});
+	}
+};
+
+const nextProperty = () => {
+	if (currentIndex.value + visibleCount < propertyImages.value.length) {
+		animateCards("right");
+
+		currentIndex.value = Math.min(
+			currentIndex.value + visibleCount,
+			propertyImages.value.length - visibleCount,
+		);
+
+		nextTick(() => {
+			animateCardsIn("right");
+		});
+	}
+};
+
+const animateCards = (direction: string) => {
+	const slideDistance = direction === "right" ? -100 : 100;
+	if (cardsContainer.value) {
+		const cardElements = Array.from(cardsContainer.value.children);
+
+		return animate(
+			cardElements,
+			{
+				transform: `translateX(${slideDistance}px)`,
+				opacity: 0,
+			},
+			{
+				duration: 0.5,
+				easing: "ease-in-out",
+			},
+		);
+	}
+};
+
+const animateCardsIn = (direction: string) => {
+	const slideDistance = direction === "right" ? 100 : -100;
+	if (cardsContainer.value) {
+		const cardElements = Array.from(cardsContainer.value.children);
+
+		animate(
+			cardElements,
+			{
+				transform: [`translateX(${slideDistance}px)`, "translateX(0)"],
+				opacity: [0, 1],
+			},
+			{
+				duration: 0.5,
+				easing: "ease-in-out",
+			},
+		);
+	}
+};
+</script>
+
+<style scoped lang="scss">
+.infoList {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 30px 80px;
+}
+.list {
+	display: grid;
+	grid-template-rows: repeat(2, 1fr);
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0 30px;
+}
+
+.mainContent {
+	padding: 80px 70px 150px;
+}
+
+.imageCarousel {
+	position: relative;
+}
+.btnLeft {
+	position: absolute;
+	left: 0;
+	z-index: 999;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.btnRight {
+	position: absolute;
+	right: 0;
+	z-index: 999;
+	top: 50%;
+	transform: translateY(-50%);
+}
+</style>

@@ -21,3 +21,15 @@ a {
 a:hover {
     color: #F2C36B;
 }
+
+.fit-content {
+	width: fit-content;
+}
+
+.mt-100 {
+    margin: 100px 0 0;
+}
+
+.mt-120 {
+    margin: 120px 0 0;
+}
