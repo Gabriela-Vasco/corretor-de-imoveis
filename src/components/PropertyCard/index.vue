@@ -7,6 +7,7 @@
 					:alt="props.featuredProperty.title"
 					cover
 				/>
+
 				<v-btn
 					class="btnFavorite mt-2 mr-2"
 					:icon="true"
@@ -65,16 +66,41 @@
 </template>
 
 <script setup lang="ts">
+import { useCookie } from "nuxt/app";
+import { ref } from "vue";
+
 const props = defineProps({
 	featuredProperty: { type: Object, default: () => {} },
 });
+
+const favoriteProperties = useCookie("favoriteProperties", {
+	default: () => [],
+});
+const isFavorited = ref(
+	favoriteProperties.value.some(
+		(property) => property.code === props.featuredProperty.code,
+	),
+);
 
 function toMoney(money: number) {
 	return money.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 function favoriteProperty() {
-	console.log("Favoritou a propriedade");
+	const index = favoriteProperties.value.findIndex(
+		(property) => property.code === props.featuredProperty.code,
+	);
+
+	if (index === -1) {
+		favoriteProperties.value.push(props.featuredProperty);
+		isFavorited.value = true;
+	} else {
+		favoriteProperties.value.splice(index, 1);
+		isFavorited.value = false;
+	}
+
+	favoriteProperties.value = [...favoriteProperties.value];
+	console.log("Updated favorite properties:", favoriteProperties.value);
 }
 </script>
 

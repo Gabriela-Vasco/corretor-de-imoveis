@@ -1,7 +1,9 @@
 <template>
-	<div></div>
+	<FavoriteProperties />
 </template>
 
-<script setup></script>
+<script setup>
+import FavoriteProperties from "@/app/favorite-properties";
+</script>
 
 <style lang="scss" scoped></style>

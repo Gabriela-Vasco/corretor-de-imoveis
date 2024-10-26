@@ -82,7 +82,6 @@ const message = ref<string>("");
 const form = ref<HTMLFormElement | null>(null);
 
 function submitForm() {
-	console.log(name.value, email.value, phone.value, message.value);
 	name.value = "";
 	email.value = "";
 	phone.value = "";

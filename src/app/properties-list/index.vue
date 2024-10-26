@@ -60,19 +60,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { usePropertiesStore } from "../../store/properties";
 import { type FilterConditions } from "@/types";
 import { featuredPropertiesMock } from "@/app/home/components/featured/featuredPropertiesMock";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
 
+const propertiesStore = usePropertiesStore();
 const page = ref(1);
 const itemsPerPage = ref(10);
 const sortOption = ref("Maior preço");
 const filterConditions = ref<FilterConditions>();
+const propertiesList = ref([]);
+
+onMounted(async () => {
+	await callOnce(propertiesStore.fetch);
+	const { properties } = propertiesStore.propertiesList;
+	propertiesList.value = properties;
+});
 
 const sortedProperties = computed(() => {
-	const properties = [...featuredPropertiesMock];
+	const properties = propertiesList.value;
 
 	switch (sortOption.value) {
 		case "Maior preço":

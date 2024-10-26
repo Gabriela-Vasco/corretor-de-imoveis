@@ -10,8 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.5.5",
+    "google-auth-library": "^9.14.2",
+    "google-spreadsheet": "^4.1.4",
     "motion": "^10.18.0",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.4",
     "sass": "^1.79.5",
     "vue": "latest",
     "vue-router": "latest",
