@@ -25,7 +25,8 @@
 						:key="index"
 						:src="image"
 						cover
-						style="height: 100%; max-height: 480px"
+						max-height="480px"
+						min-height="480px"
 					/>
 				</div>
 			</div>
@@ -56,8 +57,22 @@
 				<h2 class="montserrat-title font-weight-medium">
 					{{ currentProperty?.title }}
 				</h2>
-				<v-btn icon variant="text">
-					<v-icon size="48px" color="secondary-darken-1">mdi-heart-outline</v-icon>
+				<v-btn
+					:icon="true"
+					size="70px"
+					color="secondary-darken-1"
+					variant="text"
+					@click="propertiesStore.toggleFavorite(currentProperty?.code)"
+				>
+					<v-icon size="48px" color="secondary-darken-1">
+						{{
+							propertiesStore.favoritedProperties?.find(
+								(fav) => fav.code === currentPropertyId,
+							)
+								? "mdi-heart"
+								: "mdi-heart-outline"
+						}}
+					</v-icon>
 				</v-btn>
 			</div>
 			<v-divider
@@ -74,7 +89,9 @@
 				{{ currentProperty?.neighborhood }} - Florianópolis/SC
 			</h3>
 			<h4 class="montserrat-title font-weight-medium">
-				R$ {{ currentProperty?.price }} - {{ currentProperty?.venda_ou_aluguel }}
+				R$
+				{{ formatCurrency(currentProperty?.price) }}
+				- {{ currentProperty?.venda_ou_aluguel }}
 			</h4>
 
 			<div style="border: 1px solid black" class="fit-content my-16 px-10">
@@ -89,9 +106,8 @@
 						garagem</span
 					>
 					<span
-						><strong>Condomínio</strong> R${{
-							currentProperty?.condominium_price
-						}}</span
+						><strong>Condomínio</strong> R$
+						{{ formatCurrency(currentProperty?.condominium_price) }}</span
 					>
 					<span
 						><strong>Área privativa</strong> {{ currentProperty?.private_area }}</span
@@ -104,7 +120,10 @@
 						<v-icon>mdi-shower-head</v-icon>
 						{{ currentProperty?.suites }} suítes</span
 					>
-					<span><strong>IPTU</strong> R$ {{ currentProperty?.IPTU }}</span>
+					<span
+						><strong>IPTU</strong> R$
+						{{ formatCurrency(currentProperty?.IPTU) }}</span
+					>
 				</div>
 			</div>
 
@@ -121,14 +140,14 @@
 					</div>
 					<v-list lines="one" class="list mt-6 py-0 fit-content">
 						<v-list-item
-							v-for="(item, index) in infrastructureItems"
+							v-for="(item, index) in visibleInfraestructureItems"
 							:key="index"
 							:title="item"
 							prepend-icon="mdi-circle-small"
 							class="px-0"
 						></v-list-item>
 					</v-list>
-					<v-btn variant="text" class="px-0 mt-4 ml-2">
+					<v-btn variant="text" class="px-0 mt-4 ml-2" @click="openDialog = true">
 						<span class="text-decoration-underline">
 							Veja mais <v-icon class="mb-1">mdi-menu-right</v-icon></span
 						>
@@ -175,7 +194,10 @@
 				</div>
 			</div>
 
-			<div class="d-flex flex-column align-center mt-120">
+			<div
+				v-if="relatedProperties.length"
+				class="d-flex flex-column align-center mt-120"
+			>
 				<h2
 					class="montserrat-title font-weight-medium mr-5"
 					style="font-size: 24px"
@@ -198,22 +220,36 @@
 				</div>
 			</div>
 		</div>
+
+		<InfraestructureModal
+			v-if="visibleInfraestructureItems.length"
+			v-model="openDialog"
+			:infraestructure-items="infrastructureItems"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
+import { useCookie } from "nuxt/app";
 import { animate } from "motion";
 import { useRoute } from "vue-router";
 import { usePropertiesStore } from "../../../store/properties";
+import InfraestructureModal from "./components/InfraestructureModal/index.vue";
 
+const propertiesStore = usePropertiesStore();
 const visibleCount = 3;
 const currentPropertyId = ref<string | null>(null);
 const currentProperty = ref();
 const route = useRoute();
-const propertiesStore = usePropertiesStore();
 
+const visibleInfraestructureItems = ref([]);
 const infrastructureItems = ref([]);
+const propertyImages = ref([]);
+
+const cardsContainer = ref<HTMLElement | null>(null);
+const currentIndex = ref(0);
+const openDialog = ref(false);
 
 onMounted(async () => {
 	currentPropertyId.value = route.params.propertyId as string;
@@ -221,16 +257,33 @@ onMounted(async () => {
 		currentPropertyId.value,
 	);
 
-	const { infrastructure } = currentProperty.value;
+	const { infrastructure, images } = currentProperty.value;
 	if (infrastructure) {
 		infrastructureItems.value = infrastructure
 			.split(",")
 			.map((item: string) => item.trim());
+
+		visibleInfraestructureItems.value = [...infrastructureItems.value].slice(
+			0,
+			6,
+		);
+	}
+
+	if (images) {
+		propertyImages.value = images.split(",");
 	}
 });
 
-const cardsContainer = ref<HTMLElement | null>(null);
-const currentIndex = ref(0);
+const favoriteProperties = useCookie("favoriteProperties", {
+	default: () => [],
+});
+const isFavorited = ref(false);
+
+watch(currentProperty, () => {
+	isFavorited.value = favoriteProperties.value.some(
+		(property) => property.code === currentProperty.value.code,
+	);
+});
 
 const visibleProperties = computed(() => {
 	return propertyImages.value.slice(
@@ -238,15 +291,6 @@ const visibleProperties = computed(() => {
 		currentIndex.value + visibleCount,
 	);
 });
-
-const propertyImages = ref([
-	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-	"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-]);
 
 const relatedProperties = computed(() => [
 	{
@@ -348,6 +392,10 @@ const animateCardsIn = (direction: string) => {
 		);
 	}
 };
+
+function formatCurrency(price: string) {
+	return Number(price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+}
 </script>
 
 <style scoped lang="scss">

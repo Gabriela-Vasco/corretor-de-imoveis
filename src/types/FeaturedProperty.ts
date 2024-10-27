@@ -1,6 +1,6 @@
 export type FeaturedProperty = {
 	title: string;
-	image: string;
+	image_cover: string;
 	neighborhood: string;
 	code: string;
 	price: number;

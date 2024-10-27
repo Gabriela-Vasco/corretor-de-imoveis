@@ -35,7 +35,6 @@
 			<SearchBar @filter-properties="filterProperties" />
 
 			<div v-if="paginatedProperties.length" class="w-100">
-				{{ paginatedProperties }}
 				<div class="d-flex ga-10 flex-wrap mb-10">
 					<PropertyCard
 						v-for="(property, index) in paginatedProperties"
@@ -173,7 +172,6 @@ function filterProperties(obj: FilterConditions) {
 }
 
 function goToProperty(code: string) {
-	console.log("Go to property", code);
 	router.push("/properties-list/" + code);
 }
 </script>

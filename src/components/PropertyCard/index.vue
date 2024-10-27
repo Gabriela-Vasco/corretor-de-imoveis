@@ -3,7 +3,7 @@
 	<v-card width="320px">
 		<div class="coverImage">
 			<v-img
-				:src="props.featuredProperty.image"
+				:src="props.featuredProperty.image_cover"
 				:alt="props.featuredProperty.title"
 				cover
 			/>
@@ -14,10 +14,17 @@
 				color="secondary-darken-1"
 				size="small"
 				flat
-				@click="favoriteProperty"
+				@click="propertiesStore.toggleFavorite(props.featuredProperty?.code)"
+				@click.stop
 			>
 				<v-icon>
-					{{ props.featuredProperty.favorited ? "mdi-heart" : "mdi-heart-outline" }}
+					{{
+						propertiesStore.favoritedProperties?.find(
+							(fav) => fav.code === props.featuredProperty.code,
+						)
+							? "mdi-heart"
+							: "mdi-heart-outline"
+					}}
 				</v-icon>
 			</v-btn>
 			<div class="bg-primary propertyCode px-3 py-2 rounded-te">
@@ -66,41 +73,16 @@
 </template>
 
 <script setup lang="ts">
-import { useCookie } from "nuxt/app";
-import { ref, watch } from "vue";
+import { usePropertiesStore } from "../../store/properties";
 
 const props = defineProps({
 	featuredProperty: { type: Object, default: () => {} },
 });
 
-const favoriteProperties = useCookie("favoriteProperties", {
-	default: () => [],
-});
-const isFavorited = ref(
-	favoriteProperties.value.some(
-		(property) => property.code === props.featuredProperty.code,
-	),
-);
+const propertiesStore = usePropertiesStore();
 
 function toMoney(money: number) {
 	return money.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-function favoriteProperty() {
-	const index = favoriteProperties.value.findIndex(
-		(property) => property.code === props.featuredProperty.code,
-	);
-
-	if (index === -1) {
-		favoriteProperties.value.push(props.featuredProperty);
-		isFavorited.value = true;
-	} else {
-		favoriteProperties.value.splice(index, 1);
-		isFavorited.value = false;
-	}
-
-	favoriteProperties.value = [...favoriteProperties.value];
-	console.log("Updated favorite properties:", favoriteProperties.value);
 }
 </script>
 

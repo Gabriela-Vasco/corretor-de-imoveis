@@ -4,12 +4,21 @@ import { JWT } from "google-auth-library";
 interface PropertyRow {
 	title: string;
 	neighborhood: string;
-	image: string;
+	image_cover: string;
 	code: string;
 	price: string;
 	bedrooms: string;
 	bathrooms: string;
 	garage: string;
+	description: string;
+	venda_ou_aluguel: string;
+	total_area: string;
+	private_area: string;
+	suites: string;
+	condominium_price: string;
+	IPTU: string;
+	infrastructure: string;
+	images: string;
 }
 
 export default defineEventHandler(async (event) => {
@@ -34,7 +43,7 @@ export default defineEventHandler(async (event) => {
 	const properties = rows.map((row) => ({
 		title: row.get("title"),
 		neighborhood: row.get("neighborhood"),
-		image: row.get("image"),
+		image_cover: row.get("image_cover"),
 		code: row.get("code"),
 		price: row.get("price"),
 		bedrooms: row.get("bedrooms"),
@@ -48,6 +57,7 @@ export default defineEventHandler(async (event) => {
 		condominium_price: row.get("condominium_price"),
 		IPTU: row.get("IPTU"),
 		infrastructure: row.get("infrastructure"),
+		images: row.get("images"),
 	})) as PropertyRow[];
 
 	return {

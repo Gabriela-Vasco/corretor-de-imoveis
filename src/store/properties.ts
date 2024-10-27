@@ -1,6 +1,11 @@
+import { useCookie } from "nuxt/app";
+
 export const usePropertiesStore = defineStore("properties", {
 	state: () => ({
 		propertiesList: [],
+		favoritedProperties: useCookie("favoriteProperties", {
+			default: () => [],
+		}).value,
 	}),
 	actions: {
 		async loadData() {
@@ -24,6 +29,30 @@ export const usePropertiesStore = defineStore("properties", {
 				await this.loadData();
 			}
 			return this.propertiesList.find((property) => property.code === code);
+		},
+
+		async toggleFavorite(code) {
+			const property = await this.getPropertyByCode(code);
+			if (!property) {
+				throw new Error("Property not found.");
+			}
+
+			const favoritePropertiesCookie = useCookie("favoriteProperties");
+			const index = this.favoritedProperties.findIndex(
+				(favProperty) => favProperty.code === code,
+			);
+
+			if (index === -1) {
+				this.favoritedProperties.push(property);
+			} else {
+				this.favoritedProperties.splice(index, 1);
+			}
+
+			favoritePropertiesCookie.value = this.favoritedProperties;
+		},
+
+		getFavoriteProperties() {
+			return this.favoritedProperties;
 		},
 	},
 });
