@@ -6,7 +6,14 @@
 				style="width: 652px"
 			>
 				<h2 style="font-size: 32px" class="font-weight-regular">
-					Imóveis | Foram encontrados 70 imóveis
+					Imóveis |
+					{{
+						propertiesList.length === 0
+							? ""
+							: propertiesList.length === 1
+								? "Foi encontrado 1 imóvel"
+								: `Foram encontrados ${propertiesList.length} imóveis`
+					}}
 				</h2>
 				<v-divider color="dark" class="border-opacity-75 w-100" :thickness="1" />
 			</div>
@@ -28,12 +35,14 @@
 			<SearchBar @filter-properties="filterProperties" />
 
 			<div v-if="paginatedProperties.length" class="w-100">
+				{{ paginatedProperties }}
 				<div class="d-flex ga-10 flex-wrap mb-10">
 					<PropertyCard
 						v-for="(property, index) in paginatedProperties"
 						:key="index"
 						:featured-property="property"
 						class="property-card"
+						@click="goToProperty(property.code)"
 					/>
 				</div>
 				<div class="d-flex align-center justify-center">
@@ -61,9 +70,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { usePropertiesStore } from "../../store/properties";
 import { type FilterConditions } from "@/types";
-import { featuredPropertiesMock } from "@/app/home/components/featured/featuredPropertiesMock";
+// import { featuredPropertiesMock } from "@/app/home/components/featured/featuredPropertiesMock";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
 
@@ -72,13 +82,13 @@ const page = ref(1);
 const itemsPerPage = ref(10);
 const sortOption = ref("Maior preço");
 const filterConditions = ref<FilterConditions>();
-const propertiesList = ref([]);
+const router = useRouter();
 
 onMounted(async () => {
-	await callOnce(propertiesStore.fetch);
-	const { properties } = propertiesStore.propertiesList;
-	propertiesList.value = properties;
+	await propertiesStore.loadData();
 });
+
+const propertiesList = computed(() => propertiesStore.propertiesList);
 
 const sortedProperties = computed(() => {
 	const properties = propertiesList.value;
@@ -160,6 +170,11 @@ const pageCount = computed(() =>
 
 function filterProperties(obj: FilterConditions) {
 	filterConditions.value = obj;
+}
+
+function goToProperty(code: string) {
+	console.log("Go to property", code);
+	router.push("/properties-list/" + code);
 }
 </script>
 

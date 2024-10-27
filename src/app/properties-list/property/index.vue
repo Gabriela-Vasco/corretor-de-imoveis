@@ -50,10 +50,12 @@
 		</div>
 		<div class="mainContent">
 			<div class="border-md rounded-lg px-2 py-1 text-center" style="width: 100px">
-				<span>Cód: 777</span>
+				<span>Cód: {{ currentProperty?.code }}</span>
 			</div>
 			<div class="d-flex justify-space-between align-center my-3">
-				<h2 class="montserrat-title font-weight-medium">Apartamento de exemplo</h2>
+				<h2 class="montserrat-title font-weight-medium">
+					{{ currentProperty?.title }}
+				</h2>
 				<v-btn icon variant="text">
 					<v-icon size="48px" color="secondary-darken-1">mdi-heart-outline</v-icon>
 				</v-btn>
@@ -65,38 +67,44 @@
 				:thickness="1"
 			/>
 			<p class="w-75 text-justify my-8">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-				tempor incididunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-				sed do eiusmod tempor incididunt. Lorem ipsum dolor sit amet, consectetur
-				adipiscing elit, sed do eiusmod tempor incididunt. Lorem ipsum dolor sit
-				amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. Lorem
-				ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-				incididunt.
+				{{ currentProperty?.description }}
 			</p>
 
 			<h3 class="montserrat-title font-weight-medium mb-2">
-				Bairro - Florianópolis/SC
+				{{ currentProperty?.neighborhood }} - Florianópolis/SC
 			</h3>
-			<h4 class="montserrat-title font-weight-medium">R$ 100.000,00 - Venda</h4>
+			<h4 class="montserrat-title font-weight-medium">
+				R$ {{ currentProperty?.price }} - {{ currentProperty?.venda_ou_aluguel }}
+			</h4>
 
 			<div style="border: 1px solid black" class="fit-content my-16 px-10">
 				<div class="px-16 py-12 infoList">
-					<span><strong>Área total</strong> 185,00 m²</span>
+					<span><strong>Área total</strong> {{ currentProperty?.total_area }}</span>
 					<span class="d-flex align-center ga-2">
-						<v-icon>mdi-bed-double-outline</v-icon> 3 dormitórios</span
+						<v-icon>mdi-bed-double-outline</v-icon>
+						{{ currentProperty?.bedrooms }} dormitórios</span
 					>
 					<span class="d-flex align-center ga-2">
-						<v-icon>mdi-car</v-icon> 1 vaga de garagem</span
+						<v-icon>mdi-car</v-icon> {{ currentProperty?.garage }} vaga de
+						garagem</span
 					>
-					<span><strong>Condomínio</strong> R$1.500,00</span>
-					<span><strong>Área privativa</strong> 140,00 m²</span>
+					<span
+						><strong>Condomínio</strong> R${{
+							currentProperty?.condominium_price
+						}}</span
+					>
+					<span
+						><strong>Área privativa</strong> {{ currentProperty?.private_area }}</span
+					>
 					<span class="d-flex align-center ga-2">
-						<v-icon>mdi-toilet</v-icon> 2 banheiros</span
+						<v-icon>mdi-toilet</v-icon>
+						{{ currentProperty?.bathrooms }} banheiros</span
 					>
 					<span class="d-flex align-center ga-2">
-						<v-icon>mdi-shower-head</v-icon> 2 suítes</span
+						<v-icon>mdi-shower-head</v-icon>
+						{{ currentProperty?.suites }} suítes</span
 					>
-					<span><strong>IPTU</strong> R$ 3.500,00</span>
+					<span><strong>IPTU</strong> R$ {{ currentProperty?.IPTU }}</span>
 				</div>
 			</div>
 
@@ -113,7 +121,7 @@
 					</div>
 					<v-list lines="one" class="list mt-6 py-0 fit-content">
 						<v-list-item
-							v-for="(item, index) in items"
+							v-for="(item, index) in infrastructureItems"
 							:key="index"
 							:title="item"
 							prepend-icon="mdi-circle-small"
@@ -194,19 +202,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 import { animate } from "motion";
+import { useRoute } from "vue-router";
+import { usePropertiesStore } from "../../../store/properties";
 
 const visibleCount = 3;
+const currentPropertyId = ref<string | null>(null);
+const currentProperty = ref();
+const route = useRoute();
+const propertiesStore = usePropertiesStore();
 
-const items = ref([
-	"Elevador",
-	"Piscina",
-	"Salão de festas",
-	"Churrasqueira",
-	"Academia",
-	"Portaria 24h",
-]);
+const infrastructureItems = ref([]);
+
+onMounted(async () => {
+	currentPropertyId.value = route.params.propertyId as string;
+	currentProperty.value = await propertiesStore.getPropertyByCode(
+		currentPropertyId.value,
+	);
+
+	const { infrastructure } = currentProperty.value;
+	if (infrastructure) {
+		infrastructureItems.value = infrastructure
+			.split(",")
+			.map((item: string) => item.trim());
+	}
+});
 
 const cardsContainer = ref<HTMLElement | null>(null);
 const currentIndex = ref(0);

@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 	});
 
 	const doc = new GoogleSpreadsheet(
-		"19G3UF0Bdv6ZxZ-R1xkUxIkJV4mFOX3pNriDxz5lO7TQ",
+		"1swyogtXPH075ea0ruNEzT23e5CYSNOoAcZz2ySLgavI",
 		serviceAccountAuth,
 	);
 
@@ -39,7 +39,15 @@ export default defineEventHandler(async (event) => {
 		price: row.get("price"),
 		bedrooms: row.get("bedrooms"),
 		bathrooms: row.get("bathrooms"),
+		suites: row.get("suites"),
 		garage: row.get("garage"),
+		description: row.get("description"),
+		venda_ou_aluguel: row.get("venda_ou_aluguel"),
+		total_area: row.get("total_area"),
+		private_area: row.get("private_area"),
+		condominium_price: row.get("condominium_price"),
+		IPTU: row.get("IPTU"),
+		infrastructure: row.get("infrastructure"),
 	})) as PropertyRow[];
 
 	return {

@@ -22,7 +22,7 @@
 				<div ref="cardsContainer" class="property-cards mx-8">
 					<PropertyCard
 						v-for="property in visibleProperties"
-						:key="property.code"
+						:key="property?.code"
 						:featured-property="property"
 						class="property-card"
 					/>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, watch } from "vue";
 import { animate } from "motion";
 import { featuredPropertiesMock } from "./featuredPropertiesMock";
 import PropertyCard from "@/components/PropertyCard";
