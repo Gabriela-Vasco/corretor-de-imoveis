@@ -1,0 +1,22 @@
+export type Property = {
+	title: string;
+	neighborhood: string;
+	image_cover: string;
+	code: string;
+	price: string;
+	bedrooms: string;
+	bathrooms: string;
+	garage: string;
+	description: string;
+	sale_or_rent: string;
+	property_type: string;
+	total_area: string;
+	private_area: string;
+	suites: string;
+	condominium_price: string;
+	IPTU: string;
+	infrastructure: string[];
+	images: string;
+	featured: boolean;
+	related_properties: string[];
+};

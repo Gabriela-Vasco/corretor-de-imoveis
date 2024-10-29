@@ -26,17 +26,17 @@ module.exports = {
 		sourceType: "module",
 	},
 	rules: {
-		// indent: ["error", "tab"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
+		camelcase: "off",
 		"vue/multi-word-component-names": "off",
 		"vue/singleline-html-element-content-newline": "off",
 		"vue/multiline-html-element-content-newline": "error",
 		"prettier/prettier": [
 			"error",
 			{
-				tabWidth: 1, // This can be kept as is
-				useTabs: true, // Ensure you are using tabs
+				tabWidth: 1,
+				useTabs: true,
 				singleQuote: false,
 				semi: true,
 				printWidth: 80,

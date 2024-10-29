@@ -2,17 +2,17 @@
 	<div class="bg-primary d-flex flex-column search pl-6 pr-10 py-10">
 		<div class="mb-6">
 			<p class="text-secondary mb-3">Dormitórios</p>
-			<v-item-group v-model="dorms" class="d-flex justify-space-between">
+			<v-item-group v-model="bedrooms" class="d-flex justify-space-between">
 				<v-item v-for="n in 5" :key="n">
 					<template #default="{ toggle }">
 						<v-btn
-							:active="dorms === n - 1"
+							:active="bedrooms === n - 1"
 							icon
 							height="40"
 							variant="text"
 							width="40"
 							border
-							:color="dorms === n - 1 ? 'secondary' : 'light'"
+							:color="bedrooms === n - 1 ? 'secondary' : 'light'"
 							@click="toggle"
 						>
 							<v-icon>{{ `mdi-numeric-${n}` }}</v-icon>
@@ -127,7 +127,7 @@
 		</div>
 
 		<div>
-			<p class="text-secondary mb-4">Tipo do imóvel</p>
+			<p class="text-secondary mb-4">Perfil do Imóvel</p>
 			<v-select
 				v-model="type"
 				label=""
@@ -135,6 +135,20 @@
 				:items="['Residencial', 'Comercial']"
 				variant="solo"
 				density="compact"
+				clearable
+			></v-select>
+		</div>
+
+		<div>
+			<p class="text-secondary mb-4">Tipo do imóvel</p>
+			<v-select
+				v-model="saleOrRent"
+				label=""
+				min-width="100%"
+				:items="['Venda', 'Aluguel']"
+				variant="solo"
+				density="compact"
+				clearable
 			></v-select>
 		</div>
 
@@ -147,6 +161,7 @@
 				:items="['Centro', 'João Paulo']"
 				variant="solo"
 				density="compact"
+				clearable
 			></v-select>
 		</div>
 
@@ -175,12 +190,13 @@
 import { ref } from "vue";
 import { type FilterConditions } from "@/types";
 
-const dorms = ref<number>(-1);
+const bedrooms = ref<number>(-1);
 const suites = ref<number>(-1);
 const bathrooms = ref<number>(-1);
 const garages = ref<number>(-1);
 const minPrice = ref<string | null>(null);
 const maxPrice = ref<string | null>(null);
+const saleOrRent = ref<string | null>(null);
 const type = ref<string | null>(null);
 const neighborhood = ref<string | null>(null);
 const code = ref<string | null>(null);
@@ -189,13 +205,14 @@ const emit = defineEmits(["filterProperties"]);
 
 function searchFilteredProperties() {
 	const obj: FilterConditions = {
-		dorms: dorms.value,
+		bedrooms: bedrooms.value,
 		suites: suites.value,
 		bathrooms: bathrooms.value,
 		garages: garages.value,
 		minPrice: minPrice.value,
 		maxPrice: maxPrice.value,
-		type: type.value,
+		sale_or_rent: saleOrRent.value,
+		property_type: type.value,
 		neighborhood: neighborhood.value,
 		code: code.value,
 	};
@@ -213,13 +230,14 @@ function searchFilteredProperties() {
 }
 
 function clearFilterConditions() {
-	dorms.value = -1;
+	bedrooms.value = -1;
 	suites.value = -1;
 	bathrooms.value = -1;
 	garages.value = -1;
 	minPrice.value = null;
 	maxPrice.value = null;
 	type.value = null;
+	saleOrRent.value = null;
 	neighborhood.value = null;
 	code.value = null;
 

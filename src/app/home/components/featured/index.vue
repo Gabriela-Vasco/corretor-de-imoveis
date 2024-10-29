@@ -1,67 +1,80 @@
 <template>
 	<div class="d-flex flex-column align-center py-16">
-		<h3 class="featuredTitle mb-12">Imóveis em destaque</h3>
-		<div
-			v-if="visibleProperties.length"
-			class="d-flex align-center justify-center py-2"
-		>
-			<v-btn
-				icon
-				variant="text"
-				size="90px"
-				class="d-flex align-center justify-center ml-2 pr-2"
-				:disabled="currentIndex === 0"
-				@click="prevProperty"
-			>
-				<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
-					mdi-menu-left
-				</v-icon>
-			</v-btn>
-
-			<div class="d-flex justify-center align-center w-100 overflow-hidden py-5">
-				<div ref="cardsContainer" class="property-cards mx-8">
-					<PropertyCard
-						v-for="property in visibleProperties"
-						:key="property?.code"
-						:featured-property="property"
-						class="property-card"
-					/>
-				</div>
-			</div>
-
-			<v-btn
-				icon
-				variant="text"
-				size="90px"
-				class="d-flex align-center justify-center mr-2 pl-2"
-				:disabled="currentIndex + visibleCount >= featuredProperties.length"
-				@click="nextProperty"
-			>
-				<v-icon
-					size="120px"
-					:color="
-						currentIndex + visibleCount >= featuredProperties.length
-							? 'gray'
-							: 'primary'
-					"
+		<div v-if="visibleProperties.length">
+			<h3 class="featuredTitle text-center mb-12">Imóveis em destaque</h3>
+			<div class="d-flex align-center justify-center py-2">
+				<v-btn
+					v-if="visibleProperties.length > visibleCount"
+					icon
+					variant="text"
+					size="90px"
+					class="d-flex align-center justify-center ml-2 pr-2"
+					:disabled="currentIndex === 0"
+					@click="prevProperty"
 				>
-					mdi-menu-right
-				</v-icon>
-			</v-btn>
+					<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+						mdi-menu-left
+					</v-icon>
+				</v-btn>
+
+				<div
+					class="d-flex justify-center align-center w-100 overflow-hidden py-5 ga-8"
+				>
+					<div ref="cardsContainer" class="property-cards">
+						<PropertyCard
+							v-for="property in visibleProperties"
+							:key="property?.code"
+							:featured-property="property"
+							class="property-card"
+						/>
+					</div>
+				</div>
+
+				<v-btn
+					v-if="visibleProperties.length > visibleCount"
+					icon
+					variant="text"
+					size="90px"
+					class="d-flex align-center justify-center mr-2 pl-2"
+					:disabled="currentIndex + visibleCount >= featuredProperties.length"
+					@click="nextProperty"
+				>
+					<v-icon
+						size="120px"
+						:color="
+							currentIndex + visibleCount >= featuredProperties.length
+								? 'gray'
+								: 'primary'
+						"
+					>
+						mdi-menu-right
+					</v-icon>
+				</v-btn>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, watch } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 import { animate } from "motion";
-import { featuredPropertiesMock } from "./featuredPropertiesMock";
+import { usePropertiesStore } from "@/store/properties";
 import PropertyCard from "@/components/PropertyCard";
-import { type FeaturedProperty } from "~/types/FeaturedProperty";
+import { type Property } from "~/types/Property";
 
-const featuredProperties = ref<FeaturedProperty[]>(featuredPropertiesMock);
+const propertiesStore = usePropertiesStore();
 const currentIndex = ref(0);
 const visibleCount = 4;
+
+onMounted(async () => {
+	await propertiesStore.loadData();
+});
+
+const featuredProperties = computed<Property[]>(() =>
+	propertiesStore.propertiesList.filter(
+		(property: Property) => property.featured,
+	),
+);
 
 const visibleProperties = computed(() => {
 	return featuredProperties.value.slice(

@@ -50,7 +50,7 @@
 			</v-btn>
 		</div>
 		<div class="mainContent">
-			<div class="border-md rounded-lg px-2 py-1 text-center" style="width: 100px">
+			<div class="border-md rounded-lg px-2 py-1 text-center" style="width: 120px">
 				<span>Cód: {{ currentProperty?.code }}</span>
 			</div>
 			<div class="d-flex justify-space-between align-center my-3">
@@ -88,11 +88,23 @@
 			<h3 class="montserrat-title font-weight-medium mb-2">
 				{{ currentProperty?.neighborhood }} - Florianópolis/SC
 			</h3>
-			<h4 class="montserrat-title font-weight-medium">
+			<h4 class="montserrat-title font-weight-medium mb-5">
 				R$
 				{{ formatCurrency(currentProperty?.price) }}
-				- {{ currentProperty?.venda_ou_aluguel }}
 			</h4>
+			<div class="d-flex ga-3">
+				<v-chip class="montserrat-title font-weight-medium" color="primary">
+					Imóvel {{ currentProperty?.property_type?.toLowerCase() }}
+				</v-chip>
+
+				<v-chip class="montserrat-title font-weight-medium" color="primary">
+					{{
+						currentProperty?.sale_or_rent === "Venda"
+							? `Imóvel à ${currentProperty?.sale_or_rent?.toLowerCase()}`
+							: `Imóvel para ${currentProperty?.sale_or_rent?.toLowerCase()}`
+					}}
+				</v-chip>
+			</div>
 
 			<div style="border: 1px solid black" class="fit-content my-16 px-10">
 				<div class="px-16 py-12 infoList">
@@ -258,10 +270,9 @@ onMounted(async () => {
 	);
 
 	const { infrastructure, images } = currentProperty.value;
+	console.log(infrastructure);
 	if (infrastructure) {
-		infrastructureItems.value = infrastructure
-			.split(",")
-			.map((item: string) => item.trim());
+		infrastructureItems.value = infrastructure;
 
 		visibleInfraestructureItems.value = [...infrastructureItems.value].slice(
 			0,
@@ -292,41 +303,15 @@ const visibleProperties = computed(() => {
 	);
 });
 
-const relatedProperties = computed(() => [
-	{
-		code: 777,
-		title: "Apartamento de exemplo",
-		neighborhood: "Bairro - Florianópolis/SC",
-		price: 100000,
-		bedrooms: 3,
-		bathrooms: 2,
-		garage: 1,
-		image:
-			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	},
-	{
-		code: 778,
-		title: "Apartamento de exemplo",
-		neighborhood: "Bairro - Florianópolis/SC",
-		price: 200000,
-		bedrooms: 4,
-		bathrooms: 3,
-		garage: 2,
-		image:
-			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	},
-	{
-		code: 779,
-		title: "Apartamento de exemplo",
-		neighborhood: "Bairro - Florianópolis/SC",
-		price: 300000,
-		bedrooms: 5,
-		bathrooms: 4,
-		garage: 3,
-		image:
-			"https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4=",
-	},
-]);
+const relatedProperties = computed(() => {
+	if (currentProperty.value) {
+		const { related_properties } = currentProperty.value;
+		return propertiesStore.propertiesList.filter((property) => {
+			return related_properties.includes(property.code);
+		});
+	}
+	return [];
+});
 
 const prevProperty = () => {
 	if (currentIndex.value > 0) {

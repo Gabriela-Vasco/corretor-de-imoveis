@@ -5,6 +5,8 @@
 			<v-img
 				:src="props.featuredProperty.image_cover"
 				:alt="props.featuredProperty.title"
+				min-height="250px"
+				max-height="250px"
 				cover
 			/>
 
@@ -37,7 +39,7 @@
 				{{ props.featuredProperty.neighborhood }}
 			</p>
 			<p class="montserrat-title my-3">
-				{{ toMoney(props.featuredProperty.price) }}
+				R$ {{ formatCurrency(props.featuredProperty.price) }}
 			</p>
 			<div class="d-flex align-end justify-space-between">
 				<div class="d-flex flex-column ga-2">
@@ -81,8 +83,8 @@ const props = defineProps({
 
 const propertiesStore = usePropertiesStore();
 
-function toMoney(money: number) {
-	return money.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+function formatCurrency(price: string) {
+	return Number(price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 </script>
 

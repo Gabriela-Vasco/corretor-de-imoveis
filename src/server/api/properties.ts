@@ -1,25 +1,6 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
-
-interface PropertyRow {
-	title: string;
-	neighborhood: string;
-	image_cover: string;
-	code: string;
-	price: string;
-	bedrooms: string;
-	bathrooms: string;
-	garage: string;
-	description: string;
-	venda_ou_aluguel: string;
-	total_area: string;
-	private_area: string;
-	suites: string;
-	condominium_price: string;
-	IPTU: string;
-	infrastructure: string;
-	images: string;
-}
+import { type Property } from "~/types/Property";
 
 export default defineEventHandler(async (event) => {
 	const credentials = JSON.parse(process.env.GCP_CREDENTIALS);
@@ -51,14 +32,23 @@ export default defineEventHandler(async (event) => {
 		suites: row.get("suites"),
 		garage: row.get("garage"),
 		description: row.get("description"),
-		venda_ou_aluguel: row.get("venda_ou_aluguel"),
+		sale_or_rent: row.get("sale_or_rent"),
+		property_type: row.get("property_type"),
 		total_area: row.get("total_area"),
 		private_area: row.get("private_area"),
 		condominium_price: row.get("condominium_price"),
 		IPTU: row.get("IPTU"),
-		infrastructure: row.get("infrastructure"),
+		infrastructure: row
+			.get("infrastructure")
+			.split(",")
+			.map((item: string) => item.trim()),
 		images: row.get("images"),
-	})) as PropertyRow[];
+		featured: row.get("featured")?.toLowerCase() === "true",
+		related_properties: row
+			.get("related_properties")
+			.split(",")
+			.map((item: string) => item.trim()),
+	})) as Property[];
 
 	return {
 		properties,

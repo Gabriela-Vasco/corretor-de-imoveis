@@ -23,9 +23,9 @@
 								style="background-color: transparent; border: none"
 							>
 								<div class="d-flex flex-column align-center justify-center ga-3 pa-0">
-									<v-img
+									<img
 										:src="apartment?.image_cover || 'https://placehold.co/250'"
-										width="250px"
+										style="min-height: 150px; max-height: 150px"
 									/>
 									<v-btn
 										icon="true"
@@ -92,13 +92,23 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Tipo</td>
+							<td>Perfil do Imóvel</td>
 							<td
 								v-for="apartment in favoritedProperties"
 								:key="apartment.code"
 								class="text-center"
 							>
-								{{ apartment?.venda_ou_aluguel || " - " }}
+								{{ apartment?.sale_or_rent || " - " }}
+							</td>
+						</tr>
+						<tr>
+							<td>Tipo de imóvel</td>
+							<td
+								v-for="apartment in favoritedProperties"
+								:key="apartment.code"
+								class="text-center"
+							>
+								{{ apartment?.property_type || " - " }}
 							</td>
 						</tr>
 						<tr>
@@ -167,6 +177,9 @@
 					</tbody>
 				</table>
 			</div>
+		</div>
+		<div v-else>
+			<NoContent class="mx-auto" headline="Nenhum imóvel favoritado" size="250" />
 		</div>
 	</div>
 </template>
