@@ -154,15 +154,15 @@
 
 		<div>
 			<p class="text-secondary mb-4">Bairros</p>
-			<v-select
+			<v-autocomplete
 				v-model="neighborhood"
 				label=""
 				min-width="100%"
-				:items="['Centro', 'João Paulo']"
+				:items="neighborhoodsList"
 				variant="solo"
 				density="compact"
 				clearable
-			></v-select>
+			/>
 		</div>
 
 		<div>
@@ -187,9 +187,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { type FilterConditions } from "@/types";
+import { useNeighborhoods } from "@/composables/services/useNeighborhoods";
 
+const neighborhoods = useNeighborhoods();
 const bedrooms = ref<number>(-1);
 const suites = ref<number>(-1);
 const bathrooms = ref<number>(-1);
@@ -200,15 +202,24 @@ const saleOrRent = ref<string | null>(null);
 const type = ref<string | null>(null);
 const neighborhood = ref<string | null>(null);
 const code = ref<string | null>(null);
+const neighborhoodsList = ref([]);
 
 const emit = defineEmits(["filterProperties"]);
 
+onMounted(async () => {
+	try {
+		neighborhoodsList.value = await neighborhoods.list();
+	} catch (e) {
+		console.error(e);
+	}
+});
+
 function searchFilteredProperties() {
 	const obj: FilterConditions = {
-		bedrooms: bedrooms.value,
-		suites: suites.value,
-		bathrooms: bathrooms.value,
-		garages: garages.value,
+		bedrooms: bedrooms.value + 1,
+		suites: suites.value + 1,
+		bathrooms: bathrooms.value + 1,
+		garages: garages.value + 1,
 		minPrice: minPrice.value,
 		maxPrice: maxPrice.value,
 		sale_or_rent: saleOrRent.value,
@@ -220,7 +231,8 @@ function searchFilteredProperties() {
 	for (const item in obj) {
 		if (
 			!obj[item as keyof FilterConditions] ||
-			obj[item as keyof FilterConditions] === -1
+			obj[item as keyof FilterConditions] === -1 ||
+			obj[item as keyof FilterConditions] === 0
 		) {
 			delete obj[item as keyof FilterConditions];
 		}

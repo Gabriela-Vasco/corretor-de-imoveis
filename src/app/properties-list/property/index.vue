@@ -270,7 +270,7 @@ onMounted(async () => {
 	);
 
 	const { infrastructure, images } = currentProperty.value;
-	console.log(infrastructure);
+
 	if (infrastructure) {
 		infrastructureItems.value = infrastructure;
 

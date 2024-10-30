@@ -1,55 +1,66 @@
 <template>
 	<div class="d-flex flex-column align-center py-16">
-		<div v-if="visibleProperties.length">
-			<h3 class="featuredTitle text-center mb-12">Imóveis em destaque</h3>
-			<div class="d-flex align-center justify-center py-2">
-				<v-btn
-					v-if="visibleProperties.length > visibleCount"
-					icon
-					variant="text"
-					size="90px"
-					class="d-flex align-center justify-center ml-2 pr-2"
-					:disabled="currentIndex === 0"
-					@click="prevProperty"
-				>
-					<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
-						mdi-menu-left
-					</v-icon>
-				</v-btn>
-
-				<div
-					class="d-flex justify-center align-center w-100 overflow-hidden py-5 ga-8"
-				>
-					<div ref="cardsContainer" class="property-cards">
-						<PropertyCard
-							v-for="property in visibleProperties"
-							:key="property?.code"
-							:featured-property="property"
-							class="property-card"
-						/>
-					</div>
-				</div>
-
-				<v-btn
-					v-if="visibleProperties.length > visibleCount"
-					icon
-					variant="text"
-					size="90px"
-					class="d-flex align-center justify-center mr-2 pl-2"
-					:disabled="currentIndex + visibleCount >= featuredProperties.length"
-					@click="nextProperty"
-				>
-					<v-icon
-						size="120px"
-						:color="
-							currentIndex + visibleCount >= featuredProperties.length
-								? 'gray'
-								: 'primary'
-						"
+		<div v-if="loading" class="d-flex align-center justify-center ga-12 my-5">
+			<v-skeleton-loader
+				v-for="index in 4"
+				:key="index"
+				class="mx-auto border"
+				width="300"
+				type="image, article"
+			/>
+		</div>
+		<div v-else>
+			<div v-if="visibleProperties.length">
+				<h3 class="featuredTitle text-center mb-12">Imóveis em destaque</h3>
+				<div class="d-flex align-center justify-center py-2">
+					<v-btn
+						v-if="featuredProperties.length > visibleCount"
+						icon
+						variant="text"
+						size="90px"
+						class="d-flex align-center justify-center ml-2 pr-2"
+						:disabled="currentIndex === 0"
+						@click="prevProperty"
 					>
-						mdi-menu-right
-					</v-icon>
-				</v-btn>
+						<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+							mdi-menu-left
+						</v-icon>
+					</v-btn>
+
+					<div
+						class="d-flex justify-center align-center w-100 overflow-hidden py-5 ga-8 mx-8"
+					>
+						<div ref="cardsContainer" class="property-cards">
+							<PropertyCard
+								v-for="property in visibleProperties"
+								:key="property?.code"
+								:featured-property="property"
+								class="property-card"
+							/>
+						</div>
+					</div>
+
+					<v-btn
+						v-if="featuredProperties.length > visibleCount"
+						icon
+						variant="text"
+						size="90px"
+						class="d-flex align-center justify-center mr-2 pl-2"
+						:disabled="currentIndex + visibleCount >= featuredProperties.length"
+						@click="nextProperty"
+					>
+						<v-icon
+							size="120px"
+							:color="
+								currentIndex + visibleCount >= featuredProperties.length
+									? 'gray'
+									: 'primary'
+							"
+						>
+							mdi-menu-right
+						</v-icon>
+					</v-btn>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -65,9 +76,17 @@ import { type Property } from "~/types/Property";
 const propertiesStore = usePropertiesStore();
 const currentIndex = ref(0);
 const visibleCount = 4;
+const loading = ref(false);
 
 onMounted(async () => {
-	await propertiesStore.loadData();
+	try {
+		loading.value = true;
+		await propertiesStore.loadData();
+	} catch (e) {
+		console.error(e);
+	} finally {
+		loading.value = false;
+	}
 });
 
 const featuredProperties = computed<Property[]>(() =>

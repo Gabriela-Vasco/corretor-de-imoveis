@@ -7,6 +7,12 @@ export default defineNuxtConfig({
 	components: true,
 	devtools: { enabled: true },
 
+	runtimeConfig: {
+		public: {
+			cmf_token: process.env.NUXT_CMF_TOKEN,
+		},
+	},
+
 	alias: {
 		"~": resolve(__dirname, "src"),
 		"@": resolve(__dirname, "src"),
