@@ -96,35 +96,35 @@
 
 		<div>
 			<p class="text-secondary mb-2">Preço</p>
-			<div class="d-flex align-center justify-space-between ga-5">
+			<div class="d-flex flex-column align-center justify-space-between">
 				<div class="w-100">
 					<small class="text-secondary">Mínimo</small>
 					<v-text-field
-						v-model="minPrice"
+						:model-value="minPrice"
 						label=""
 						variant="solo-filled"
-						prefix="R$"
-						placeholder="0,00"
+						placeholder="R$ 0,00"
 						color="white"
 						density="compact"
-						persistent-placeholder
+						@update:model-value="onInput('minPrice', $event)"
 					/>
 				</div>
 
 				<div class="w-100">
 					<small class="text-secondary">Máximo</small>
 					<v-text-field
-						v-model="maxPrice"
+						:model-value="maxPrice"
 						label=""
 						variant="solo-filled"
-						prefix="R$"
-						placeholder="0,00"
+						placeholder="R$ 0,00"
 						density="compact"
-						persistent-placeholder
+						@update:model-value="onInput('maxPrice', $event)"
 					/>
 				</div>
 			</div>
 		</div>
+
+		<v-divider class="my-10 border-opacity-25" :thickness="3" />
 
 		<div>
 			<p class="text-secondary mb-4">Perfil do Imóvel</p>
@@ -214,14 +214,20 @@ onMounted(async () => {
 	}
 });
 
+function formatPrice(value: string | null): number {
+	if (!value) return 0;
+	const numericValue = value.replace(/[^\d,]/g, "").replace(",", ".");
+	return parseFloat(numericValue) || 0;
+}
+
 function searchFilteredProperties() {
 	const obj: FilterConditions = {
 		bedrooms: bedrooms.value + 1,
 		suites: suites.value + 1,
 		bathrooms: bathrooms.value + 1,
 		garages: garages.value + 1,
-		minPrice: minPrice.value,
-		maxPrice: maxPrice.value,
+		minPrice: formatPrice(minPrice.value),
+		maxPrice: formatPrice(maxPrice.value),
 		sale_or_rent: saleOrRent.value,
 		property_type: type.value,
 		neighborhood: neighborhood.value,
@@ -254,6 +260,25 @@ function clearFilterConditions() {
 	code.value = null;
 
 	searchFilteredProperties();
+}
+
+function formatCurrency(value: string) {
+	const number = parseFloat(value.replace(/\D/g, "")) / 100;
+	return new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL",
+	}).format(number || 0);
+}
+
+function onInput(field: string, event: string) {
+	switch (field) {
+		case "maxPrice":
+			maxPrice.value = formatCurrency(event);
+			break;
+		case "minPrice":
+			minPrice.value = formatCurrency(event);
+			break;
+	}
 }
 </script>
 

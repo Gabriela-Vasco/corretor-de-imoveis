@@ -9,6 +9,7 @@
 				icon
 				flat
 				size="90px"
+				variant="tonal"
 				class="d-flex align-center justify-center btnLeft"
 				:disabled="currentIndex === 0"
 				@click="prevProperty"
@@ -35,6 +36,7 @@
 				icon
 				flat
 				size="90px"
+				variant="tonal"
 				class="d-flex align-center justify-center btnRight"
 				:disabled="currentIndex + visibleCount >= propertyImages.length"
 				@click="nextProperty"
@@ -159,7 +161,12 @@
 							class="px-0"
 						></v-list-item>
 					</v-list>
-					<v-btn variant="text" class="px-0 mt-4 ml-2" @click="openDialog = true">
+					<v-btn
+						v-if="infrastructureItems.length > 6"
+						variant="text"
+						class="px-0 mt-4 ml-2"
+						@click="openDialog = true"
+					>
 						<span class="text-decoration-underline">
 							Veja mais <v-icon class="mb-1">mdi-menu-right</v-icon></span
 						>
@@ -228,6 +235,7 @@
 						:key="property.code"
 						:featured-property="property"
 						class="property-card"
+						@click="goToProperty(property.code)"
 					/>
 				</div>
 			</div>
@@ -245,18 +253,20 @@
 import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { useCookie } from "nuxt/app";
 import { animate } from "motion";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { usePropertiesStore } from "../../../store/properties";
 import InfraestructureModal from "./components/InfraestructureModal/index.vue";
+import { type Property } from "@/types";
 
 const propertiesStore = usePropertiesStore();
 const visibleCount = 3;
 const currentPropertyId = ref<string | null>(null);
 const currentProperty = ref();
 const route = useRoute();
+const router = useRouter();
 
 const visibleInfraestructureItems = ref([]);
-const infrastructureItems = ref([]);
+const infrastructureItems = ref<String[]>([]);
 const propertyImages = ref([]);
 
 const cardsContainer = ref<HTMLElement | null>(null);
@@ -292,7 +302,7 @@ const isFavorited = ref(false);
 
 watch(currentProperty, () => {
 	isFavorited.value = favoriteProperties.value.some(
-		(property) => property.code === currentProperty.value.code,
+		(property: Property) => property.code === currentProperty.value.code,
 	);
 });
 
@@ -306,7 +316,7 @@ const visibleProperties = computed(() => {
 const relatedProperties = computed(() => {
 	if (currentProperty.value) {
 		const { related_properties } = currentProperty.value;
-		return propertiesStore.propertiesList.filter((property) => {
+		return propertiesStore.propertiesList.filter((property: Property) => {
 			return related_properties.includes(property.code);
 		});
 	}
@@ -380,6 +390,10 @@ const animateCardsIn = (direction: string) => {
 
 function formatCurrency(price: string) {
 	return Number(price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+}
+
+function goToProperty(code: string) {
+	router.push("/properties-list/" + code);
 }
 </script>
 

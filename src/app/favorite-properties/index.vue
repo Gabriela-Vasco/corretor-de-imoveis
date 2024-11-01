@@ -23,10 +23,12 @@
 								style="background-color: transparent; border: none"
 							>
 								<div class="d-flex flex-column align-center justify-center ga-3 pa-0">
-									<img
-										:src="apartment?.image_cover || 'https://placehold.co/250'"
-										style="min-height: 150px; max-height: 150px"
-									/>
+									<nuxt-link :to="`/properties-list/${apartment.code}`">
+										<img
+											:src="apartment?.image_cover || 'https://placehold.co/250'"
+											class="image-cover"
+										/>
+									</nuxt-link>
 									<v-btn
 										icon="true"
 										flat
@@ -199,6 +201,17 @@ function formatCurrency(price: string) {
 </script>
 
 <style scoped lang="scss">
+.image-cover {
+	min-height: 150px;
+	max-height: 150px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.image-cover:hover {
+	opacity: 0.8;
+}
+
 .table {
 	margin: 20px auto;
 	padding: 0;

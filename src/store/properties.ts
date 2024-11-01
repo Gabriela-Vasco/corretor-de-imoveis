@@ -1,4 +1,6 @@
 import { useCookie } from "nuxt/app";
+import { ref } from "vue";
+import { useSnackbarStore } from "./snackbar";
 
 export const usePropertiesStore = defineStore("properties", {
 	state: () => ({
@@ -6,6 +8,7 @@ export const usePropertiesStore = defineStore("properties", {
 		favoritedProperties: useCookie("favoriteProperties", {
 			default: () => [],
 		}).value,
+		showLimitSnackbar: ref(false),
 	}),
 	actions: {
 		async loadData() {
@@ -32,6 +35,7 @@ export const usePropertiesStore = defineStore("properties", {
 		},
 
 		async toggleFavorite(code) {
+			const snackbarStore = useSnackbarStore();
 			const property = await this.getPropertyByCode(code);
 			if (!property) {
 				throw new Error("Property not found.");
@@ -43,14 +47,24 @@ export const usePropertiesStore = defineStore("properties", {
 			);
 
 			if (index === -1) {
+				if (this.favoritedProperties.length >= 3) {
+					snackbarStore.displaySnackbar(
+						"Você só pode favoritar até 3 propriedades.",
+						"red",
+					);
+					return;
+				}
 				this.favoritedProperties.push(property);
+				snackbarStore.displaySnackbar(
+					"Propriedade adicionada aos favoritos.",
+					"green",
+				);
 			} else {
 				this.favoritedProperties.splice(index, 1);
 			}
 
 			favoritePropertiesCookie.value = this.favoritedProperties;
 		},
-
 		getFavoriteProperties() {
 			return this.favoritedProperties;
 		},

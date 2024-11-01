@@ -101,7 +101,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { usePropertiesStore } from "../../store/properties";
-import { type FilterConditions } from "@/types";
+import { type FilterConditions, Property } from "@/types";
 import NoContent from "@/components/NoContent";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
@@ -132,13 +132,17 @@ const sortedProperties = computed(() => {
 
 	switch (sortOption.value) {
 		case "Maior preço":
-			return properties.sort((a, b) => b.price - a.price);
+			return properties.sort((a: Property, b: Property) => b.price - a.price);
 		case "Menor preço":
-			return properties.sort((a, b) => a.price - b.price);
+			return properties.sort((a: Property, b: Property) => a.price - b.price);
 		case "A-Z":
-			return properties.sort((a, b) => a.title.localeCompare(b.title));
+			return properties.sort((a: Property, b: Property) =>
+				a.title.localeCompare(b.title),
+			);
 		case "Z-A":
-			return properties.sort((a, b) => b.title.localeCompare(a.title));
+			return properties.sort((a: Property, b: Property) =>
+				b.title.localeCompare(a.title),
+			);
 		default:
 			return properties;
 	}
@@ -151,25 +155,33 @@ const filteredProperties = computed(() => {
 			if (filterConditions.value[key] !== null) {
 				if (
 					key === "bedrooms" &&
-					Number(property.bedrooms) !== filterConditions.value[key]
+					((filterConditions.value[key] === 5 && Number(property.bedrooms) < 5) ||
+						(filterConditions.value[key] !== 5 &&
+							Number(property.bedrooms) !== filterConditions.value[key]))
 				) {
 					return false;
 				}
 				if (
 					key === "suites" &&
-					Number(property.suites) !== filterConditions.value[key]
+					((filterConditions.value[key] === 5 && Number(property.suites) < 5) ||
+						(filterConditions.value[key] !== 5 &&
+							Number(property.suites) !== filterConditions.value[key]))
 				) {
 					return false;
 				}
 				if (
 					key === "bathrooms" &&
-					Number(property.bathrooms) !== filterConditions.value[key]
+					((filterConditions.value[key] === 5 && Number(property.bathrooms) < 5) ||
+						(filterConditions.value[key] !== 5 &&
+							Number(property.bathrooms) !== filterConditions.value[key]))
 				) {
 					return false;
 				}
 				if (
 					key === "garages" &&
-					Number(property.garages) !== filterConditions.value[key]
+					((filterConditions.value[key] === 5 && Number(property.garage) < 5) ||
+						(filterConditions.value[key] !== 5 &&
+							Number(property.garage) !== filterConditions.value[key]))
 				) {
 					return false;
 				}

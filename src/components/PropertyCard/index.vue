@@ -1,5 +1,4 @@
 <template>
-	<!-- <nuxt-link :to="`/properties-list/${props.featuredProperty?.code}`"> -->
 	<v-card width="320px">
 		<div class="coverImage">
 			<v-img
@@ -16,8 +15,7 @@
 				color="secondary-darken-1"
 				size="small"
 				flat
-				@click="propertiesStore.toggleFavorite(props.featuredProperty?.code)"
-				@click.stop
+				@click.stop="propertiesStore.toggleFavorite(props.featuredProperty?.code)"
 			>
 				<v-icon>
 					{{
@@ -71,7 +69,6 @@
 			</div>
 		</div>
 	</v-card>
-	<!-- </nuxt-link> -->
 </template>
 
 <script setup lang="ts">
@@ -80,7 +77,6 @@ import { usePropertiesStore } from "../../store/properties";
 const props = defineProps({
 	featuredProperty: { type: Object, default: () => {} },
 });
-
 const propertiesStore = usePropertiesStore();
 
 function formatCurrency(price: string) {

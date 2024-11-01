@@ -1,5 +1,5 @@
 <template>
-	<ModalBase v-model="dialog" title="" width="900px">
+	<ModalBase v-model="dialog" title="" width="fit-content">
 		<div>
 			<div class="fit-content mb-10" style="width: 500px">
 				<h3
