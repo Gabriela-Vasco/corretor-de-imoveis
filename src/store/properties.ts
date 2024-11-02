@@ -61,6 +61,10 @@ export const usePropertiesStore = defineStore("properties", {
 				);
 			} else {
 				this.favoritedProperties.splice(index, 1);
+				snackbarStore.displaySnackbar(
+					"Propriedade removida dos favoritos.",
+					"info",
+				);
 			}
 
 			favoritePropertiesCookie.value = this.favoritedProperties;

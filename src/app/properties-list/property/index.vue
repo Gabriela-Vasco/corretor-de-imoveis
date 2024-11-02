@@ -28,6 +28,8 @@
 						cover
 						max-height="480px"
 						min-height="480px"
+						style="cursor: pointer"
+						@click="handleOpenPhotoDialog(image)"
 					/>
 				</div>
 			</div>
@@ -184,7 +186,14 @@
 					</div>
 					<div class="d-flex align-center justify-space-between my-8 ga-12">
 						<div class="d-flex flex-column align-center">
-							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+							<v-btn
+								color="primary"
+								size="90px"
+								icon="true"
+								class="mb-3"
+								style="cursor: pointer"
+								@click="openPhotoDialog = true"
+							>
 								<v-icon color="secondary-darken-1" size="35px">
 									mdi-camera-outline
 								</v-icon>
@@ -193,7 +202,13 @@
 						</div>
 
 						<div class="d-flex flex-column align-center">
-							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+							<v-btn
+								color="primary"
+								size="90px"
+								icon="true"
+								class="mb-3"
+								@click="openVideoDialog = true"
+							>
 								<v-icon color="secondary-darken-1" size="35px">
 									mdi-play-outline
 								</v-icon>
@@ -202,7 +217,13 @@
 						</div>
 
 						<div class="d-flex flex-column align-center">
-							<v-btn color="primary" size="90px" icon="true" class="mb-3">
+							<v-btn
+								color="primary"
+								size="90px"
+								icon="true"
+								class="mb-3"
+								@click="openMapDialog = true"
+							>
 								<v-icon color="secondary-darken-1" size="35px">
 									mdi-map-marker-outline
 								</v-icon>
@@ -246,6 +267,16 @@
 			v-model="openDialog"
 			:infraestructure-items="infrastructureItems"
 		/>
+
+		<PhotosModal
+			v-model="openPhotoDialog"
+			:property-images="propertyImages"
+			:first-image="firstImage"
+		/>
+
+		<VideoModal v-model="openVideoDialog" />
+
+		<MapModal v-model="openMapDialog" />
 	</div>
 </template>
 
@@ -256,6 +287,9 @@ import { animate } from "motion";
 import { useRoute, useRouter } from "vue-router";
 import { usePropertiesStore } from "../../../store/properties";
 import InfraestructureModal from "./components/InfraestructureModal/index.vue";
+import PhotosModal from "./components/PhotosModal/index.vue";
+import VideoModal from "./components/VideoModal/index.vue";
+import MapModal from "./components/MapModal/index.vue";
 import { type Property } from "@/types";
 
 const propertiesStore = usePropertiesStore();
@@ -272,6 +306,18 @@ const propertyImages = ref([]);
 const cardsContainer = ref<HTMLElement | null>(null);
 const currentIndex = ref(0);
 const openDialog = ref(false);
+const openPhotoDialog = ref(false);
+const openVideoDialog = ref(false);
+const openMapDialog = ref(false);
+const firstImage = ref<string>();
+
+watch(openPhotoDialog, (bool) => {
+	if (!bool) {
+		setTimeout(() => {
+			firstImage.value = propertyImages.value[0];
+		}, 400);
+	}
+});
 
 onMounted(async () => {
 	currentPropertyId.value = route.params.propertyId as string;
@@ -394,6 +440,11 @@ function formatCurrency(price: string) {
 
 function goToProperty(code: string) {
 	router.push("/properties-list/" + code);
+}
+
+function handleOpenPhotoDialog(image: string) {
+	openPhotoDialog.value = true;
+	firstImage.value = image;
 }
 </script>
 
