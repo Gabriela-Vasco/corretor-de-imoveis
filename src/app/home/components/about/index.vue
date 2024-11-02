@@ -1,12 +1,16 @@
 <template>
-	<div class="bg-primary d-flex align-center justify-center">
+	<div class="bg-primary d-flex align-center justify-center px-8">
 		<div
-			class="d-flex align-center justify-center ga-16 py-16"
-			style="width: 1047px"
+			class="d-flex align-center justify-center aboutContainer"
+			:class="isMobile ? 'flex-column ga-8 py-10' : 'ga-16 py-16'"
+			:style="isMobile ? 'width: 100%' : 'max-width: 1047px'"
 		>
-			<v-img :src="ProfileImage" width="374px" />
+			<v-img
+				:src="ProfileImage"
+				:width="isXMobile ? '250px' : isMobile ? '300px' : '374px'"
+			/>
 
-			<div class="about-text d-flex flex-column ga-5">
+			<div class="d-flex flex-column ga-5 text-justify aboutText">
 				<p>
 					Olá, sou Lelis Magno, corretor de imóveis especializado em propriedades de
 					médio e alto padrão em Florianópolis, SC. Com uma atuação sólida no
@@ -29,7 +33,10 @@
 					guiar você com segurança e tranquilidade.
 				</p>
 
-				<p class="font-weight-bold">
+				<p
+					class="font-weight-bold"
+					:class="isMobile ? 'text-center mt-3' : 'text-start'"
+				>
 					Vamos juntos transformar seu sonho em realidade!
 				</p>
 			</div>
@@ -39,10 +46,31 @@
 
 <script setup>
 import ProfileImage from "@/assets/images/profile-image.png";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile, isXMobile } = useScreen();
 </script>
 
 <style lang="scss" scoped>
-.about-text {
-	text-align: justify;
+@media (max-width: 956px) {
+	.aboutContainer {
+		padding: 0 50px;
+	}
+}
+
+@media (max-width: 768px) {
+	.aboutContainer {
+		padding: 0 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.aboutContainer {
+		padding: 0;
+	}
+
+	.aboutText {
+		font-size: 14px;
+	}
 }
 </style>

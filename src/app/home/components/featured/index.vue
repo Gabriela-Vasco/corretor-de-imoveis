@@ -1,8 +1,12 @@
 <template>
-	<div class="d-flex flex-column align-center py-16">
+	<div
+		class="d-flex flex-column align-center"
+		:class="isMobile ? 'py-8' : 'py-16'"
+		style="max-width: 100vw"
+	>
 		<div v-if="loading" class="d-flex align-center justify-center ga-12 my-5">
 			<v-skeleton-loader
-				v-for="index in 4"
+				v-for="index in visibleCount"
 				:key="index"
 				class="mx-auto border"
 				width="300"
@@ -11,31 +15,37 @@
 		</div>
 		<div v-else>
 			<div v-if="visibleProperties.length">
-				<h3 class="featuredTitle text-center mb-12">Imóveis em destaque</h3>
-				<div class="d-flex align-center justify-center py-2">
+				<h3 class="featuredTitle text-center">Imóveis em destaque</h3>
+				<div class="d-flex align-center justify-center py-2 mainConteiner">
 					<v-btn
 						v-if="featuredProperties.length > visibleCount"
 						icon
 						variant="text"
-						size="90px"
-						class="d-flex align-center justify-center ml-2 pr-2"
+						:size="isMobile ? '30px' : '90px'"
+						class="d-flex align-center justify-center pr-2"
+						:class="isMobile ? 'ml-0' : 'ml-2'"
 						:disabled="currentIndex === 0"
 						@click="prevProperty"
 					>
-						<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+						<v-icon
+							:size="isMobile ? '120px' : '120px'"
+							:color="currentIndex === 0 ? 'gray' : 'primary'"
+						>
 							mdi-menu-left
 						</v-icon>
 					</v-btn>
 
 					<div
-						class="d-flex justify-center align-center w-100 overflow-hidden py-5 ga-8 mx-8"
+						class="d-flex justify-center align-center w-100 overflow-hidden ga-8 cardContainer"
+						:class="isXMobile ? 'mx-2 pa-0' : isMobile ? 'mx-6 py-5' : 'mx-8 py-5'"
 					>
-						<div ref="cardsContainer" class="property-cards">
+						<div ref="cardsContainer" class="property-cards pa-0">
 							<PropertyCard
 								v-for="property in visibleProperties"
 								:key="property?.code"
 								:featured-property="property"
-								class="property-card"
+								class="property-card pa-0"
+								@click="goToProperty(property.code)"
 							/>
 						</div>
 					</div>
@@ -44,13 +54,14 @@
 						v-if="featuredProperties.length > visibleCount"
 						icon
 						variant="text"
-						size="90px"
-						class="d-flex align-center justify-center mr-2 pl-2"
+						:size="isMobile ? '30px' : '90px'"
+						class="d-flex align-center justify-center pl-2"
+						:class="isMobile ? 'mr-' : 'mr-2'"
 						:disabled="currentIndex + visibleCount >= featuredProperties.length"
 						@click="nextProperty"
 					>
 						<v-icon
-							size="120px"
+							:size="isMobile ? '120px' : '120px'"
 							:color="
 								currentIndex + visibleCount >= featuredProperties.length
 									? 'gray'
@@ -67,15 +78,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { animate } from "motion";
+import { useRouter } from "vue-router";
 import { usePropertiesStore } from "@/store/properties";
 import PropertyCard from "@/components/PropertyCard";
 import { type Property } from "~/types/Property";
+import { useScreen } from "@/composables/useScreen";
 
+const router = useRouter();
+const { windowWidth, isMobile, isXMobile } = useScreen();
 const propertiesStore = usePropertiesStore();
 const currentIndex = ref(0);
-const visibleCount = 4;
+const visibleCount = computed(() => {
+	if (windowWidth.value <= 956) return 1;
+	if (windowWidth.value <= 1280) return 2;
+	if (windowWidth.value <= 1700) return 3;
+	return 4;
+});
 const loading = ref(false);
 
 onMounted(async () => {
@@ -98,7 +118,7 @@ const featuredProperties = computed<Property[]>(() =>
 const visibleProperties = computed(() => {
 	return featuredProperties.value.slice(
 		currentIndex.value,
-		currentIndex.value + visibleCount,
+		currentIndex.value + visibleCount.value,
 	);
 });
 
@@ -108,7 +128,7 @@ const prevProperty = () => {
 	if (currentIndex.value > 0) {
 		animateCards("left");
 
-		currentIndex.value = Math.max(currentIndex.value - visibleCount, 0);
+		currentIndex.value = Math.max(currentIndex.value - visibleCount.value, 0);
 
 		nextTick(() => {
 			animateCardsIn("left");
@@ -117,12 +137,15 @@ const prevProperty = () => {
 };
 
 const nextProperty = () => {
-	if (currentIndex.value + visibleCount < featuredProperties.value.length) {
+	if (
+		currentIndex.value + visibleCount.value <
+		featuredProperties.value.length
+	) {
 		animateCards("right");
 
 		currentIndex.value = Math.min(
-			currentIndex.value + visibleCount,
-			featuredProperties.value.length - visibleCount,
+			currentIndex.value + visibleCount.value,
+			featuredProperties.value.length - visibleCount.value,
 		);
 
 		nextTick(() => {
@@ -168,11 +191,16 @@ const animateCardsIn = (direction: string) => {
 		);
 	}
 };
+
+function goToProperty(code: string) {
+	router.push("/properties-list/" + code);
+}
 </script>
 
 <style scoped lang="scss">
 .featuredTitle {
 	font-size: 32px;
+	margin-bottom: 48px;
 }
 
 .property-cards {
@@ -186,5 +214,38 @@ const animateCardsIn = (direction: string) => {
 .property-card:hover {
 	cursor: pointer;
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 956px) {
+	.featuredTitle {
+		font-size: 28px;
+		margin-bottom: 16px;
+	}
+}
+
+@media (max-width: 480px) {
+	.featuredTitle {
+		font-size: 28px;
+		margin-bottom: 0;
+	}
+
+	.mainConteiner {
+		scale: 0.9;
+	}
+
+	.cardContainer {
+		margin: 0;
+	}
+}
+
+@media (max-width: 390px) {
+	.featuredTitle {
+		font-size: 26px;
+		margin-bottom: 0;
+	}
+
+	.mainConteiner {
+		scale: 0.8;
+	}
 }
 </style>

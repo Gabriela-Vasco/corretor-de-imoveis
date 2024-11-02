@@ -1,6 +1,6 @@
 <template>
-	<div class="mb-10 d-flex flex-column justify-end align-space-between">
-		<div class="d-flex justify-start align-center mr-5" style="margin-top: 86px">
+	<div class="my-16 d-flex flex-column justify-end align-space-between">
+		<div class="d-flex justify-start align-center mr-5">
 			<div
 				class="d-flex flex-column fill-height justify-center align-end"
 				style="width: 652px"
@@ -46,7 +46,7 @@
 			</div>
 		</div>
 
-		<div v-if="!loading">
+		<div v-if="!loading" class="mt-8">
 			<div
 				v-if="propertiesList.length > 0"
 				class="d-flex justify-start mx-12 my-10 ga-8"
@@ -123,6 +123,8 @@ onMounted(async () => {
 	} finally {
 		loading.value = false;
 	}
+
+	console.log("propertiesList", propertiesStore.propertiesList);
 });
 
 const propertiesList = computed(() => propertiesStore.propertiesList);

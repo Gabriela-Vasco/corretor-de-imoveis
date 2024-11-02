@@ -1,5 +1,5 @@
 <template>
-	<v-card width="320px">
+	<v-card width="320px" class="pa-0">
 		<div class="coverImage">
 			<v-img
 				:src="props.featuredProperty.image_cover"

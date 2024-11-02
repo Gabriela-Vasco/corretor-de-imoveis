@@ -2,7 +2,7 @@
 	<div>
 		<div
 			v-if="visibleProperties.length"
-			class="d-flex align-center justify-center w-100 py-2 mt-12 imageCarousel"
+			class="d-flex align-center justify-center w-100 py-2 imageCarousel"
 			style="height: 480px"
 		>
 			<v-btn
@@ -276,7 +276,7 @@
 
 		<VideoModal v-model="openVideoDialog" />
 
-		<MapModal v-model="openMapDialog" />
+		<MapModal v-model="openMapDialog" :map="currentProperty.maps" />
 	</div>
 </template>
 

@@ -1,37 +1,32 @@
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useDisplay } from "vuetify";
 
 export function useScreen() {
-	// const windowWidth = ref(window.innerWidth);
-	// const windowHeight = ref(window.innerHeight);
-
+	const windowWidth = ref<number | null>(null);
+	const isMounted = ref(false); // Add a mount check
 	const display = useDisplay();
 
+	const isXMobile = computed(
+		() => isMounted.value && display.name.value === "xs",
+	);
 	const isMobile = computed(
-		() => display.name.value === "sm" || display.name.value === "xs",
+		() =>
+			isMounted.value &&
+			(display.name.value === "sm" || display.name.value === "xs"),
+	);
+	const isTablet = computed(
+		() => isMounted.value && display.name.value === "md",
 	);
 
-	const isTablet = computed(() => display.name.value === "md");
-
-	// function handleResize() {
-	// 	windowWidth.value = window.innerWidth;
-	// 	windowHeight.value = window.innerHeight;
-	// }
-
-	// onMounted(() => {
-	// 	// handleResize();
-	// 	window.addEventListener("resize", handleResize);
-	// });
-
-	// onUnmounted(() => {
-	// 	window.removeEventListener("resize", handleResize);
-	// });
+	onMounted(() => {
+		isMounted.value = true;
+		windowWidth.value = window.innerWidth;
+	});
 
 	return {
-		// windowWidth,
-		// windowHeight,
+		windowWidth,
 		isMobile,
 		isTablet,
-		// handleResize,
+		isXMobile,
 	};
 }

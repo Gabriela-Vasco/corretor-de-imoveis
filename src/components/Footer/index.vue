@@ -1,7 +1,11 @@
 <template>
 	<v-footer
 		color="primary"
-		height="290px"
+		:style="
+			isXMobile
+				? 'max-height: 230px; min-height: 230px'
+				: 'max-height: 290px; min-height: 290px'
+		"
 		class="d-flex flex-column justify-center footer"
 	>
 		<h3 class="text-white font-weight-bold montserrat-title align-self-start">
@@ -18,7 +22,11 @@
 					lelismagnoimoveis
 				</p>
 			</div>
-			<div class="d-flex align-center ga-7">
+
+			<div
+				class="d-flex align-center flex-wrap links"
+				:class="isMobile ? 'flex-column ga-2' : 'ga-7'"
+			>
 				<nuxt-link class="font-weight-bold" to="/"> Home </nuxt-link>
 				<span>&#x2022;</span>
 				<nuxt-link class="font-weight-bold" to="/properties-list">
@@ -33,8 +41,38 @@
 	</v-footer>
 </template>
 
+<script setup lang="ts">
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile, isXMobile } = useScreen();
+</script>
+
 <style lang="scss" scoped>
 .footer {
 	padding: 0 120px;
+}
+
+@media (max-width: 1080px) {
+	.footer {
+		font-size: 12px;
+		padding: 0 5rem;
+	}
+}
+
+@media (max-width: 956px) {
+	.footer {
+		padding: 0 3rem;
+	}
+
+	.links {
+		margin-left: 1rem;
+		margin-top: -40px;
+	}
+}
+
+@media (max-width: 480px) {
+	.footer {
+		padding: 0 2rem;
+	}
 }
 </style>

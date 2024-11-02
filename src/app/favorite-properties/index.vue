@@ -1,5 +1,5 @@
 <template>
-	<div class="d-flex flex-column" style="margin: 100px 0">
+	<div class="d-flex flex-column my-16">
 		<div
 			class="d-flex flex-column fill-height justify-center align-end mb-16"
 			style="width: 652px"

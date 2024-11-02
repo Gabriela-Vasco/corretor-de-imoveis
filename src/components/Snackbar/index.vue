@@ -7,6 +7,8 @@
 		min-height="80px"
 		position="fixed"
 		location="right"
+		content-class="snackbar"
+		class="snackbar"
 		close-on-content-click
 	/>
 </template>
@@ -20,4 +22,4 @@ defineProps({
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

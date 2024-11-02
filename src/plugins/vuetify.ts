@@ -21,7 +21,7 @@ const myCustomTheme: ThemeDefinition = {
 
 export default defineNuxtPlugin((app) => {
 	const vuetify = createVuetify({
-		// ssr: true,
+		ssr: true,
 		components,
 		directives,
 		theme: {
