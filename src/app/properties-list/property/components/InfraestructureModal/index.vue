@@ -1,10 +1,10 @@
 <template>
 	<ModalBase v-model="dialog" title="" width="fit-content">
 		<div>
-			<div class="fit-content mb-10" style="width: 500px">
+			<div class="fit-content mb-10" style="width: 500px; max-width: 90%">
 				<h3
-					class="montserrat-title font-weight-medium ml-10"
-					style="font-size: 22px"
+					class="montserrat-title font-weight-medium modalTitle"
+					:class="isMobile ? '' : 'ml-10'"
 				>
 					Infraestrutura e outras características
 				</h3>
@@ -14,10 +14,12 @@
 				<v-list-item
 					v-for="(item, index) in infraestructureItems"
 					:key="index"
-					:title="item"
+					:density="isMobile ? 'compact' : 'default'"
 					prepend-icon="mdi-circle-small"
 					class="mr-auto"
-				></v-list-item>
+				>
+					<span class="listItem">{{ item }}</span>
+				</v-list-item>
 			</v-list>
 		</div>
 	</ModalBase>
@@ -26,6 +28,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ModalBase from "@/components/ModalBase/index.vue";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile } = useScreen();
 
 defineProps({
 	infraestructureItems: { type: Array, default: () => [] },
@@ -38,5 +43,18 @@ const dialog = ref(false);
 .list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.modalTitle {
+	font-size: 1.4rem;
+}
+
+@media (max-width: 380px) {
+	.modalTitle {
+		font-size: 1.2rem;
+	}
+	.listItem {
+		font-size: 0.9rem;
+	}
 }
 </style>

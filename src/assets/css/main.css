@@ -28,6 +28,10 @@ a:hover {
 	width: fit-content;
 }
 
+.w-90 {
+    width: 90%;
+}
+
 .mt-100 {
     margin: 100px 0 0;
 }

@@ -1,12 +1,24 @@
 <template>
 	<div class="my-16 d-flex flex-column justify-end align-space-between">
-		<div class="d-flex justify-start align-center mr-5">
+		<div
+			class="d-flex justify-start"
+			:class="
+				isXMobile
+					? 'flex-column align-start mx-auto'
+					: isMobile
+						? 'flex-column align-start'
+						: 'mr-5 align-center'
+			"
+			:style="isXMobile ? 'max-width: 90%' : 'max-width: 100%'"
+		>
 			<div
 				class="d-flex flex-column fill-height justify-center align-end"
-				style="width: 652px"
+				:style="
+					isXMobile ? 'width: 100%' : isMobile ? 'width: 90%' : 'width: 750px'
+				"
 			>
-				<h2 style="font-size: 32px" class="font-weight-regular">
-					Imóveis
+				<h2 class="font-weight-regular listTitle">
+					Imóveis {{ isXMobile }}
 					{{
 						propertiesList.length === 0
 							? ""
@@ -31,9 +43,16 @@
 
 			<div
 				v-if="paginatedProperties.length"
-				class="d-flex align-center justify-center ml-auto mr-10"
+				class="d-flex align-center"
+				:class="
+					isXMobile
+						? 'justify-start'
+						: isMobile
+							? 'ml-auto mr-10 mt-3'
+							: 'ml-auto mr-10 justify-center'
+				"
 			>
-				<span style="text-wrap: nowrap">Ordenar por:</span>
+				<span>Ordenar por:</span>
 				<v-select
 					v-model="sortOption"
 					label=""
@@ -46,19 +65,41 @@
 			</div>
 		</div>
 
-		<div v-if="!loading" class="mt-8">
+		<div v-if="!loading" :class="isMobile ? '' : 'mt-8'">
 			<div
 				v-if="propertiesList.length > 0"
-				class="d-flex justify-start mx-12 my-10 ga-8"
-				style="align-items: stretch"
+				class="d-flex justify-start my-10 ga-8"
+				:class="isMobile ? 'flex-column align-center' : 'align-stretch mx-12'"
 			>
-				<SearchBar @filter-properties="filterProperties" />
+				<SearchBar v-if="!isMobile" @filter-properties="filterProperties" />
+				<template v-else>
+					<v-btn
+						color="secondary"
+						:class="
+							isXMobile ? 'w-100' : isMobile ? 'align-self-start ml-16 w-25' : ''
+						"
+						style="max-width: 90%"
+						variant="flat"
+						size="large"
+						@click="drawer = !drawer"
+					>
+						<span>Filtros</span>
+					</v-btn>
+				</template>
 				<div
 					v-if="paginatedProperties.length"
-					class="w-100 d-flex flex-column align-space-between"
-					style="flex-grow: 1"
+					class="w-100 d-flex flex-column align-space-between flex-grow-1"
 				>
-					<div class="d-flex ga-10 flex-wrap mb-10">
+					<div
+						class="d-flex ga-10 flex-wrap mb-10 align-start"
+						:class="
+							isXMobile
+								? 'justify-center'
+								: isMobile
+									? 'pl-16 justify-start'
+									: 'justify-start'
+						"
+					>
 						<PropertyCard
 							v-for="(property, index) in paginatedProperties"
 							:key="index"
@@ -67,7 +108,10 @@
 							@click="goToProperty(property.code)"
 						/>
 					</div>
-					<div class="d-flex align-end justify-center mt-auto">
+					<div
+						class="d-flex align-end justify-center mt-auto"
+						:class="isMobile ? 'flex-column' : ''"
+					>
 						<v-pagination
 							v-model="page"
 							:length="pageCount"
@@ -79,6 +123,7 @@
 							v-model="itemsPerPage"
 							label="Items por página"
 							class="pt-5"
+							:class="isMobile ? 'order-first mr-5' : ''"
 							width="130px"
 							:items="[5, 10, 15, 20]"
 							variant="outlined"
@@ -94,6 +139,9 @@
 				/>
 			</div>
 		</div>
+		<v-navigation-drawer v-model="drawer" temporary right color="primary">
+			<SearchBar @filter-properties="filterProperties" />
+		</v-navigation-drawer>
 	</div>
 </template>
 
@@ -105,6 +153,9 @@ import { type FilterConditions, Property } from "@/types";
 import NoContent from "@/components/NoContent";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile, isXMobile } = useScreen();
 
 const propertiesStore = usePropertiesStore();
 const loading = ref(false);
@@ -127,6 +178,7 @@ onMounted(async () => {
 	console.log("propertiesList", propertiesStore.propertiesList);
 });
 
+const drawer = ref(false);
 const propertiesList = computed(() => propertiesStore.propertiesList);
 
 const sortedProperties = computed(() => {
@@ -238,6 +290,7 @@ const pageCount = computed(() =>
 
 function filterProperties(obj: FilterConditions) {
 	filterConditions.value = obj;
+	drawer.value = false;
 }
 
 function goToProperty(code: string) {
@@ -245,4 +298,14 @@ function goToProperty(code: string) {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.listTitle {
+	font-size: 32px;
+}
+
+@media (max-width: 956px) {
+	.listTitle {
+		font-size: 28px;
+	}
+}
+</style>

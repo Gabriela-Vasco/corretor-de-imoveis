@@ -1,30 +1,33 @@
 <template>
 	<div
-		class="d-flex align-start justify-space-between w-100"
-		style="margin: 150px 0"
+		class="d-flex justify-space-between w-100 my-16"
+		:class="isMobile ? 'flex-column align-center' : 'align-start'"
 	>
 		<div class="d-flex flex-column align-center w-100">
-			<h2>Envie uma mensagem</h2>
-			<v-form ref="form" class="d-flex flex-column align-center">
+			<h2 class="contactTitle">Envie uma mensagem</h2>
+			<v-form ref="form" class="d-flex flex-column align-center w-100">
 				<v-text-field
 					v-model="name"
 					label="Nome"
 					variant="underlined"
-					style="width: 500px"
+					width="500px"
+					max-width="80%"
 					:rules="[() => !!name || 'Campo obrigatório']"
 				></v-text-field>
 				<v-text-field
 					v-model="email"
 					label="E-mail"
 					variant="underlined"
-					style="width: 500px"
+					width="500px"
+					max-width="80%"
 					:rules="[() => !!name || 'Campo obrigatório']"
 				></v-text-field>
 				<v-text-field
 					v-model="phone"
 					label="Telefone"
 					variant="underlined"
-					style="width: 500px"
+					width="500px"
+					max-width="80%"
 					:rules="[() => !!name || 'Campo obrigatório']"
 				></v-text-field>
 				<v-textarea
@@ -32,28 +35,42 @@
 					label="Mensagem"
 					variant="outlined"
 					class="mt-5"
-					style="width: 500px"
+					width="500px"
+					max-width="80%"
 					:rules="[() => !!name || 'Campo obrigatório']"
 				></v-textarea>
-				<small class="align-self-start">
-					<v-icon size="x-small">mdi-lock-outline</v-icon>
-					Ao enviar você está aceitando a política de privacidade.
-				</small>
-				<br />
-				<v-btn
-					class="align-self-end"
-					variant="flat"
-					color="secondary-darken-1"
-					@click="submitForm"
+				<div
+					class="d-flex flex-column align-start"
+					style="width: 500px; max-width: 80%"
 				>
-					Enviar
-				</v-btn>
+					<small>
+						<v-icon size="x-small">mdi-lock-outline</v-icon>
+						Ao enviar você está aceitando a política de privacidade.
+					</small>
+					<br />
+					<v-btn
+						class="align-self-end"
+						variant="flat"
+						:size="isMobile ? 'small' : 'default'"
+						color="secondary-darken-1"
+						:class="isMobile ? 'mt-5' : 'mt-2'"
+						@click="submitForm"
+					>
+						Enviar
+					</v-btn>
+				</div>
 			</v-form>
 		</div>
-		<v-divider vertical class="border-opacity-50 w-100" :thickness="2" />
+		<v-divider
+			:vertical="!isMobile"
+			:class="
+				isMobile ? 'my-10 w-75 border-opacity-25' : ' w-100 border-opacity-50'
+			"
+			:thickness="2"
+		/>
 		<div class="d-flex flex-column align-center w-100">
-			<h2>Informações de contato</h2>
-			<div class="d-flex flex-column align-start mt-8 ga-4">
+			<h2 class="contactTitle">Informações de contato</h2>
+			<div class="d-flex flex-column align-start mt-8 ga-4 contactContent">
 				<p>Lelis Magno da Silva | CRECI 0000-X-SC</p>
 				<p>
 					<v-icon size="small">mdi-whatsapp</v-icon>
@@ -74,6 +91,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile } = useScreen();
 
 const name = ref<string>("");
 const email = ref<string>("");
@@ -91,4 +111,19 @@ function submitForm() {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+@media (max-width: 956px) {
+	.contactTitle {
+		font-size: 1.4rem;
+	}
+}
+@media (max-width: 480px) {
+	.contactTitle {
+		font-size: 1.3rem;
+	}
+
+	.contactContent {
+		font-size: 0.9rem;
+	}
+}
+</style>

@@ -276,7 +276,7 @@
 
 		<VideoModal v-model="openVideoDialog" />
 
-		<MapModal v-model="openMapDialog" :map="currentProperty.maps" />
+		<MapModal v-model="openMapDialog" />
 	</div>
 </template>
 

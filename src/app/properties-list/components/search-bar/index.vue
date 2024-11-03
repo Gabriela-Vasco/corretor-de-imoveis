@@ -286,4 +286,10 @@ function onInput(field: string, event: string) {
 .search {
 	min-width: 300px;
 }
+
+@media (max-width: 956px) {
+	.search {
+		min-width: 100%;
+	}
+}
 </style>

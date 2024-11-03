@@ -43,7 +43,7 @@
 					rounded="xs"
 					variant="elevated"
 					class="bg-secondary font-weight-bold btn"
-					to="contact"
+					to="/contact"
 				>
 					Entre em contato
 				</v-btn>
