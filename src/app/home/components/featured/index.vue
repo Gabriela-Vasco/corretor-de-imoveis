@@ -27,10 +27,7 @@
 						:disabled="currentIndex === 0"
 						@click="prevProperty"
 					>
-						<v-icon
-							:size="isMobile ? '120px' : '120px'"
-							:color="currentIndex === 0 ? 'gray' : 'primary'"
-						>
+						<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
 							mdi-menu-left
 						</v-icon>
 					</v-btn>
@@ -96,6 +93,7 @@ const visibleCount = computed(() => {
 	if (windowWidth.value <= 1700) return 3;
 	return 4;
 });
+
 const loading = ref(false);
 
 onMounted(async () => {

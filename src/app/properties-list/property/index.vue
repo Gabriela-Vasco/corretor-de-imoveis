@@ -8,13 +8,18 @@
 			<v-btn
 				icon
 				flat
-				size="90px"
-				variant="tonal"
+				:size="isMobile ? '70px' : '90px'"
+				:variant="isMobile ? 'flat' : 'tonal'"
+				color="rgba(255, 255, 255, 0.5)"
 				class="d-flex align-center justify-center btnLeft"
+				:class="isMobile ? 'ml-2' : ''"
 				:disabled="currentIndex === 0"
 				@click="prevProperty"
 			>
-				<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+				<v-icon
+					:size="isMobile ? '90px' : '120px'"
+					:color="currentIndex === 0 ? 'gray' : 'primary'"
+				>
 					mdi-menu-left
 				</v-icon>
 			</v-btn>
@@ -37,14 +42,16 @@
 			<v-btn
 				icon
 				flat
-				size="90px"
-				variant="tonal"
+				:size="isMobile ? '70px' : '90px'"
+				:variant="isMobile ? 'flat' : 'tonal'"
 				class="d-flex align-center justify-center btnRight"
+				:class="isMobile ? 'mr-2' : ''"
+				color="rgba(255, 255, 255, 0.5)"
 				:disabled="currentIndex + visibleCount >= propertyImages.length"
 				@click="nextProperty"
 			>
 				<v-icon
-					size="120px"
+					:size="isMobile ? '90px' : '120px'"
 					:color="
 						currentIndex + visibleCount >= propertyImages.length ? 'gray' : 'primary'
 					"
@@ -63,12 +70,11 @@
 				</h2>
 				<v-btn
 					:icon="true"
-					size="70px"
-					color="secondary-darken-1"
+					:size="isMobile ? 'default' : '70px'"
 					variant="text"
 					@click="propertiesStore.toggleFavorite(currentProperty?.code)"
 				>
-					<v-icon size="48px" color="secondary-darken-1">
+					<v-icon :size="isMobile ? '35px' : '48px'" color="secondary-darken-1">
 						{{
 							propertiesStore.favoritedProperties?.find(
 								(fav) => fav.code === currentPropertyId,
@@ -82,10 +88,10 @@
 			<v-divider
 				color="dark"
 				class="border-opacity-75"
-				style="width: 1000px"
+				:style="isMobile ? 'width: 100%' : 'width: 1000px'"
 				:thickness="1"
 			/>
-			<p class="w-75 text-justify my-8">
+			<p class="text-justify my-8" :class="isMobile ? 'w-100' : 'w-75'">
 				{{ currentProperty?.description }}
 			</p>
 
@@ -110,49 +116,78 @@
 				</v-chip>
 			</div>
 
-			<div style="border: 1px solid black" class="fit-content my-16 px-10">
-				<div class="px-16 py-12 infoList">
-					<span><strong>Área total</strong> {{ currentProperty?.total_area }}</span>
-					<span class="d-flex align-center ga-2">
+			<div
+				style="border: 1px solid black"
+				:class="
+					isMobile
+						? 'd-flex flex-column align-center mt-16'
+						: 'px-10 fit-content mt-16'
+				"
+			>
+				<div class="infoList w-100" :class="isMobile ? 'py-6' : 'px-16 py-12 '">
+					<span :style="isMobile ? 'grid-area: total_area' : ''"
+						><strong>Área total</strong> {{ currentProperty?.total_area }}</span
+					>
+					<span
+						class="d-flex align-center ga-2"
+						:style="isMobile ? 'grid-area: bedrooms' : ''"
+					>
 						<v-icon>mdi-bed-double-outline</v-icon>
 						{{ currentProperty?.bedrooms }} dormitórios</span
 					>
-					<span class="d-flex align-center ga-2">
-						<v-icon>mdi-car</v-icon> {{ currentProperty?.garage }} vaga de
-						garagem</span
-					>
 					<span
+						class="d-flex align-center ga-2"
+						:style="isMobile ? 'grid-area: garages' : ''"
+					>
+						<v-icon>mdi-car</v-icon> {{ currentProperty?.garage }}
+						{{ currentProperty?.garage === 1 ? "vaga" : "vagas" }} de garagem</span
+					>
+					<span :style="isMobile ? 'grid-area: condominium' : ''"
 						><strong>Condomínio</strong> R$
 						{{ formatCurrency(currentProperty?.condominium_price) }}</span
 					>
-					<span
+					<span :style="isMobile ? 'grid-area: living_area' : ''"
 						><strong>Área privativa</strong> {{ currentProperty?.private_area }}</span
 					>
-					<span class="d-flex align-center ga-2">
+					<span
+						class="d-flex align-center ga-2"
+						:style="isMobile ? 'grid-area: bathrooms' : ''"
+					>
 						<v-icon>mdi-toilet</v-icon>
 						{{ currentProperty?.bathrooms }} banheiros</span
 					>
-					<span class="d-flex align-center ga-2">
+					<span
+						class="d-flex align-center ga-2"
+						:style="isMobile ? 'grid-area: suites' : ''"
+					>
 						<v-icon>mdi-shower-head</v-icon>
 						{{ currentProperty?.suites }} suítes</span
 					>
-					<span
+					<span :style="isMobile ? 'grid-area: iptu' : ''"
 						><strong>IPTU</strong> R$
 						{{ formatCurrency(currentProperty?.IPTU) }}</span
 					>
 				</div>
 			</div>
 
-			<div class="mt-100 d-flex align-start justify-space-between ga-16">
+			<div
+				class="d-flex align-start justify-space-between ga-16"
+				:class="isMobile ? 'mt-16 flex-column' : 'mt-100'"
+			>
 				<div>
 					<div class="fit-content">
 						<h3
 							class="montserrat-title font-weight-medium mr-5"
-							style="font-size: 22px"
+							:style="isMobile ? 'font-size: 20px' : 'font-size: 22px'"
 						>
 							Infraestrutura e outras características
 						</h3>
-						<v-divider color="grey" class="border-opacity-50" :thickness="1" />
+						<v-divider
+							color="grey"
+							class="border-opacity-50"
+							:class="isMobile ? 'w-75 mt-1' : ''"
+							:thickness="1"
+						/>
 					</div>
 					<v-list lines="one" class="list mt-6 py-0 fit-content">
 						<v-list-item
@@ -174,27 +209,35 @@
 						>
 					</v-btn>
 				</div>
-				<div class="fit-content mx-auto">
+				<div class="fit-content" :class="isMobile ? '' : 'mx-auto'">
 					<div class="fit-content">
 						<h3
 							class="montserrat-title font-weight-medium mr-5"
-							style="font-size: 22px"
+							:style="isMobile ? 'font-size: 20px' : 'font-size: 22px'"
 						>
 							Detalhes
 						</h3>
-						<v-divider color="grey" class="border-opacity-50" :thickness="1" />
+						<v-divider
+							color="grey"
+							class="border-opacity-50"
+							:class="isMobile ? 'mt-1' : ''"
+							:thickness="1"
+						/>
 					</div>
-					<div class="d-flex align-center justify-space-between my-8 ga-12">
+					<div
+						class="d-flex align-center"
+						:class="isMobile ? 'my-6 ga-10' : 'my-8 ga-12 justify-space-between'"
+					>
 						<div class="d-flex flex-column align-center">
 							<v-btn
 								color="primary"
-								size="90px"
+								:size="isMobile ? '70px' : '90px'"
 								icon="true"
 								class="mb-3"
 								style="cursor: pointer"
 								@click="openPhotoDialog = true"
 							>
-								<v-icon color="secondary-darken-1" size="35px">
+								<v-icon color="secondary-darken-1" :size="isMobile ? '30px' : '35px'">
 									mdi-camera-outline
 								</v-icon>
 							</v-btn>
@@ -204,12 +247,12 @@
 						<div class="d-flex flex-column align-center">
 							<v-btn
 								color="primary"
-								size="90px"
+								:size="isMobile ? '70px' : '90px'"
 								icon="true"
 								class="mb-3"
 								@click="openVideoDialog = true"
 							>
-								<v-icon color="secondary-darken-1" size="35px">
+								<v-icon color="secondary-darken-1" :size="isMobile ? '30px' : '35px'">
 									mdi-play-outline
 								</v-icon>
 							</v-btn>
@@ -219,12 +262,12 @@
 						<div class="d-flex flex-column align-center">
 							<v-btn
 								color="primary"
-								size="90px"
+								:size="isMobile ? '70px' : '90px'"
 								icon="true"
 								class="mb-3"
 								@click="openMapDialog = true"
 							>
-								<v-icon color="secondary-darken-1" size="35px">
+								<v-icon color="secondary-darken-1" :size="isMobile ? '30px' : '35px'">
 									mdi-map-marker-outline
 								</v-icon>
 							</v-btn>
@@ -236,7 +279,8 @@
 
 			<div
 				v-if="relatedProperties.length"
-				class="d-flex flex-column align-center mt-120"
+				class="d-flex flex-column align-center"
+				:class="isMobile ? 'mt-16' : 'mt-120'"
 			>
 				<h2
 					class="montserrat-title font-weight-medium mr-5"
@@ -247,10 +291,13 @@
 				<v-divider
 					color="grey"
 					class="border-opacity-50 mb-8 mt-3"
-					style="width: 540px"
+					:style="isMobile ? 'width: 100%' : 'width: 540px'"
 					:thickness="1"
 				/>
-				<div class="d-flex -justify-space-between align-center ga-10">
+				<div
+					class="d-flex justify-space-between align-center ga-10"
+					:class="isMobile ? 'flex-column' : ''"
+				>
 					<PropertyCard
 						v-for="property in relatedProperties"
 						:key="property.code"
@@ -291,9 +338,11 @@ import PhotosModal from "./components/PhotosModal/index.vue";
 import VideoModal from "./components/VideoModal/index.vue";
 import MapModal from "./components/MapModal/index.vue";
 import { type Property } from "@/types";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile, windowWidth } = useScreen();
 
 const propertiesStore = usePropertiesStore();
-const visibleCount = 3;
 const currentPropertyId = ref<string | null>(null);
 const currentProperty = ref();
 const route = useRoute();
@@ -310,6 +359,13 @@ const openPhotoDialog = ref(false);
 const openVideoDialog = ref(false);
 const openMapDialog = ref(false);
 const firstImage = ref<string>();
+
+const visibleCount = computed(() => {
+	if (windowWidth.value <= 956) return 1;
+	if (windowWidth.value <= 1280) return 2;
+	if (windowWidth.value <= 1700) return 3;
+	return 4;
+});
 
 watch(openPhotoDialog, (bool) => {
 	if (!bool) {
@@ -355,7 +411,7 @@ watch(currentProperty, () => {
 const visibleProperties = computed(() => {
 	return propertyImages.value.slice(
 		currentIndex.value,
-		currentIndex.value + visibleCount,
+		currentIndex.value + visibleCount.value,
 	);
 });
 
@@ -373,7 +429,7 @@ const prevProperty = () => {
 	if (currentIndex.value > 0) {
 		animateCards("left");
 
-		currentIndex.value = Math.max(currentIndex.value - visibleCount, 0);
+		currentIndex.value = Math.max(currentIndex.value - visibleCount.value, 0);
 
 		nextTick(() => {
 			animateCardsIn("left");
@@ -382,12 +438,12 @@ const prevProperty = () => {
 };
 
 const nextProperty = () => {
-	if (currentIndex.value + visibleCount < propertyImages.value.length) {
+	if (currentIndex.value + visibleCount.value < propertyImages.value.length) {
 		animateCards("right");
 
 		currentIndex.value = Math.min(
-			currentIndex.value + visibleCount,
-			propertyImages.value.length - visibleCount,
+			currentIndex.value + visibleCount.value,
+			propertyImages.value.length - visibleCount.value,
 		);
 
 		nextTick(() => {
@@ -453,6 +509,8 @@ function handleOpenPhotoDialog(image: string) {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 30px 80px;
+	max-width: 90%;
+	overflow-x: scroll;
 }
 .list {
 	display: grid;
@@ -482,5 +540,44 @@ function handleOpenPhotoDialog(image: string) {
 	z-index: 999;
 	top: 50%;
 	transform: translateY(-50%);
+}
+
+@media (max-width: 956px) {
+	.mainContent {
+		padding: 30px 20px;
+	}
+
+	.infoList {
+		grid-template-columns: unset;
+		gap: 25px 80px;
+		grid-template-areas:
+			"total_area bedrooms"
+			"living_area bathrooms"
+			"iptu suites"
+			"condominium garages";
+	}
+}
+
+@media (max-width: 480px) {
+	.infoList {
+		grid-template-columns: unset;
+		gap: 10px;
+		grid-template-areas:
+			"total_area"
+			"living_area"
+			"iptu"
+			"condominium"
+			"bedrooms"
+			"bathrooms"
+			"suites"
+			"garages";
+	}
+
+	.list {
+		display: grid;
+		grid-template-rows: auto;
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
 }
 </style>

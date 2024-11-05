@@ -18,7 +18,7 @@
 				"
 			>
 				<h2 class="font-weight-regular listTitle">
-					Imóveis {{ isXMobile }}
+					Imóveis
 					{{
 						propertiesList.length === 0
 							? ""

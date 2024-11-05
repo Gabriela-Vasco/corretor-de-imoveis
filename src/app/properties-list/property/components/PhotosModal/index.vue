@@ -1,23 +1,31 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="1200px">
 		<v-sheet height="auto" style="overflow-x: hidden">
-			<div>
-				<v-img :src="mainImage" cover max-height="600px" min-height="auto" />
+			<div class="mb-5">
+				<v-img
+					:src="mainImage"
+					cover
+					:max-height="isXMobile ? '100%' : '600px'"
+					min-height="auto"
+				/>
 			</div>
 			<div
 				v-if="visibleProperties.length"
-				class="d-flex align-center justify-center w-100 imageCarousel py-5"
+				class="d-flex align-center justify-center w-100 py-5"
 			>
 				<v-btn
 					icon
 					flat
-					size="90px"
+					:size="isXMobile ? '60px' : '90px'"
 					variant="text"
 					class="d-flex align-center justify-center btnLeft"
 					:disabled="currentIndex === 0"
 					@click="prevProperty"
 				>
-					<v-icon size="120px" :color="currentIndex === 0 ? 'gray' : 'primary'">
+					<v-icon
+						:size="isXMobile ? '90px' : '120px'"
+						:color="currentIndex === 0 ? 'gray' : 'primary'"
+					>
 						mdi-menu-left
 					</v-icon>
 				</v-btn>
@@ -25,7 +33,11 @@
 				<div
 					class="d-flex justify-space-between align-center w-100 overflow-hidden"
 				>
-					<div ref="cardsContainer" class="w-100 d-flex justify-space-between ga-8">
+					<div
+						ref="cardsContainer"
+						class="w-100 d-flex justify-space-between"
+						:class="isXMobile ? 'ga-2' : 'ga-8'"
+					>
 						<v-img
 							v-for="(image, index) in visibleProperties"
 							:key="index"
@@ -43,14 +55,14 @@
 				<v-btn
 					icon
 					flat
-					size="90px"
+					:size="isXMobile ? '60px' : '90px'"
 					variant="text"
 					class="d-flex align-center justify-center btnRight"
 					:disabled="currentIndex + visibleCount >= propertyImages.length"
 					@click="nextProperty"
 				>
 					<v-icon
-						size="120px"
+						:size="isXMobile ? '90px' : '120px'"
 						:color="
 							currentIndex + visibleCount >= propertyImages.length ? 'gray' : 'primary'
 						"
@@ -64,8 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, watch, onUnmounted } from "vue";
+import { ref, nextTick, computed, watch } from "vue";
 import { animate } from "motion";
+import { useScreen } from "@/composables/useScreen";
+
+const { isXMobile, windowWidth } = useScreen();
 
 const props = defineProps({
 	propertyImages: { type: Array, default: () => [] },
@@ -73,10 +88,13 @@ const props = defineProps({
 });
 
 const model = defineModel<boolean>();
-const visibleCount = 3;
 const currentIndex = ref(0);
 const imagesContainer = ref<HTMLElement | null>(null);
 const mainImage = ref();
+const visibleCount = computed(() => {
+	if (windowWidth.value <= 480) return 2;
+	return 3;
+});
 
 watch(model, () => {
 	mainImage.value = props.firstImage || props.propertyImages[0];
@@ -93,7 +111,7 @@ watch(model, () => {
 const visibleProperties = computed(() => {
 	return props.propertyImages.slice(
 		currentIndex.value,
-		currentIndex.value + visibleCount,
+		currentIndex.value + visibleCount.value,
 	);
 });
 
@@ -101,7 +119,7 @@ const prevProperty = () => {
 	if (currentIndex.value > 0) {
 		animateCards("left");
 
-		currentIndex.value = Math.max(currentIndex.value - visibleCount, 0);
+		currentIndex.value = Math.max(currentIndex.value - visibleCount.value, 0);
 
 		nextTick(() => {
 			animateCardsIn("left");
@@ -110,12 +128,12 @@ const prevProperty = () => {
 };
 
 const nextProperty = () => {
-	if (currentIndex.value + visibleCount < props.propertyImages.length) {
+	if (currentIndex.value + visibleCount.value < props.propertyImages.length) {
 		animateCards("right");
 
 		currentIndex.value = Math.min(
-			currentIndex.value + visibleCount,
-			props.propertyImages.length - visibleCount,
+			currentIndex.value + visibleCount.value,
+			props.propertyImages.length - visibleCount.value,
 		);
 
 		nextTick(() => {
@@ -172,21 +190,3 @@ const animateCardsIn = (direction: string) => {
 	opacity: 0.8;
 }
 </style>
-<!-- .imageCarousel {
-	position: relative;
-}
-.btnLeft {
-	position: absolute;
-	left: 0;
-	z-index: 999;
-	top: 50%;
-	transform: translateY(-50%);
-}
-
-.btnRight {
-	position: absolute;
-	right: 0;
-	z-index: 999;
-	top: 50%;
-	transform: translateY(-50%);
-} -->

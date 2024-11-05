@@ -1,25 +1,21 @@
 <template>
-	<div class="d-flex flex-column my-16" style="border: 1px solid red">
+	<div class="d-flex flex-column my-16">
 		<div
-			class="d-flex flex-column fill-height align-end"
-			:class="isMobile ? 'justify-start mb-10' : 'mb-16 justify-center'"
-			:style="isMobile ? 'width: fit-content' : 'width: 652px'"
+			class="d-flex flex-column fill-height justify-center align-end mb-16"
+			style="width: 652px"
 		>
-			<h2 class="font-weight-regular favoritesTitle">Compare até 3 imóveis</h2>
+			<h2 style="font-size: 32px" class="font-weight-regular">
+				Compare até 3 imóveis
+			</h2>
 			<v-divider color="dark" class="border-opacity-75 w-100" :thickness="1" />
 		</div>
-		<div
-			v-if="favoritedProperties.length"
-			class="table"
-			style="border: 1px solid blue; min-height: 100%"
-		>
+		<div v-if="favoritedProperties.length" class="table">
 			<div class="apartment-comparison">
 				<table>
 					<thead>
 						<tr>
 							<th
-								style="background-color: transparent; border: none"
-								:style="isMobile ? 'width: fit-content' : 'width: 250px'"
+								style="width: 250px; background-color: transparent; border: none"
 							></th>
 							<th
 								v-for="apartment in favoritedProperties"
@@ -193,9 +189,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { usePropertiesStore } from "../../store/properties";
-import { useScreen } from "@/composables/useScreen";
 
-const { isXMobile, isMobile } = useScreen();
 const propertiesStore = usePropertiesStore();
 const favoritedProperties = computed(() => propertiesStore.favoritedProperties);
 
@@ -207,11 +201,6 @@ function formatCurrency(price: string) {
 </script>
 
 <style scoped lang="scss">
-.favoritesTitle {
-	font-size: 32px;
-	padding-left: 30px;
-}
-
 .image-cover {
 	min-height: 150px;
 	max-height: 150px;
@@ -264,73 +253,5 @@ tbody tr:nth-child(even) td:not(:first-child) {
 
 tbody tr:nth-child(odd) td:not(:first-child) {
 	background-color: #fff;
-}
-
-@media screen and (max-width: 956px) {
-	.favoritesTitle {
-		font-size: 28px;
-	}
-
-	.table {
-		margin: 0;
-		height: 100%;
-	}
-
-	.comparison-container {
-		max-width: 900px;
-	}
-
-	.comparison-header h2 {
-		font-size: 26px;
-	}
-}
-
-@media screen and (max-width: 768px) {
-	.comparison-container {
-		max-width: 100%;
-		padding: 0 15px;
-	}
-
-	.comparison-header {
-		align-items: center;
-		margin-bottom: 12px;
-	}
-
-	.comparison-header h2 {
-		font-size: 24px;
-		text-align: center;
-	}
-
-	.table {
-		overflow-x: auto;
-	}
-}
-
-@media screen and (max-width: 600px) {
-	.comparison-header h2 {
-		font-size: 22px;
-	}
-
-	.image-cover {
-		min-height: 100px;
-		max-height: 100px;
-	}
-
-	td,
-	th {
-		padding: 8px 10px;
-		font-size: 12px;
-	}
-}
-
-@media screen and (max-width: 480px) {
-	.comparison-header h2 {
-		font-size: 20px;
-	}
-
-	.image-cover {
-		min-height: 80px;
-		max-height: 80px;
-	}
 }
 </style>

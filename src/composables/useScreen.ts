@@ -3,7 +3,7 @@ import { useDisplay } from "vuetify";
 
 export function useScreen() {
 	const windowWidth = ref<number | null>(null);
-	const isMounted = ref(false); // Add a mount check
+	const isMounted = ref(false);
 	const display = useDisplay();
 
 	const isXMobile = computed(

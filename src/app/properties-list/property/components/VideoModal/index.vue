@@ -1,7 +1,16 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="auto">
 		<v-sheet style="overflow: hidden">
-			<video controls autoplay width="1200px">
+			<v-snackbar
+				v-model="showLandscapeMessage"
+				color="secondary"
+				timeout="6000"
+				position="fixed"
+				location="right"
+			>
+				Para uma melhor experiência, assista o vídeo na horizontal.
+			</v-snackbar>
+			<video controls autoplay :width="isMobile || isTablet ? '100%' : '1200px'">
 				<source :src="video" />
 			</video>
 		</v-sheet>
@@ -9,8 +18,19 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import video from "./ordenacao_e_filtros.webm";
+import { useScreen } from "@/composables/useScreen";
+
+const { isMobile, isTablet } = useScreen();
 const model = defineModel<boolean>();
+const showLandscapeMessage = ref(false);
+
+onMounted(() => {
+	if (isMobile || isTablet) {
+		showLandscapeMessage.value = true;
+	}
+});
 </script>
 
 <style scoped></style>
