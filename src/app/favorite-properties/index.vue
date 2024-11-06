@@ -1,18 +1,14 @@
 <template>
-	<div class="d-flex flex-column my-16" style="border: 1px solid red">
+	<div class="d-flex flex-column" :class="isMobile ? 'my-10' : 'my-16'">
 		<div
 			class="d-flex flex-column fill-height align-end"
 			:class="isMobile ? 'justify-start mb-10' : 'mb-16 justify-center'"
-			:style="isMobile ? 'width: fit-content' : 'width: 652px'"
+			:style="isMobile || isTablet ? 'width: fit-content' : 'width: 652px'"
 		>
 			<h2 class="font-weight-regular favoritesTitle">Compare até 3 imóveis</h2>
 			<v-divider color="dark" class="border-opacity-75 w-100" :thickness="1" />
 		</div>
-		<div
-			v-if="favoritedProperties.length"
-			class="table"
-			style="border: 1px solid blue; min-height: 100%"
-		>
+		<div v-if="favoritedProperties.length" class="table">
 			<div class="apartment-comparison">
 				<table>
 					<thead>
@@ -195,7 +191,7 @@ import { computed } from "vue";
 import { usePropertiesStore } from "../../store/properties";
 import { useScreen } from "@/composables/useScreen";
 
-const { isXMobile, isMobile } = useScreen();
+const { isMobile, isTablet } = useScreen();
 const propertiesStore = usePropertiesStore();
 const favoritedProperties = computed(() => propertiesStore.favoritedProperties);
 
@@ -223,14 +219,15 @@ function formatCurrency(price: string) {
 	opacity: 0.8;
 }
 
+.apartment-comparison {
+	width: 100%;
+}
+
 .table {
 	margin: 20px auto;
 	padding: 0;
 	width: 100%;
 	max-width: 1200px;
-}
-.apartment-comparison {
-	width: 100%;
 }
 
 table {
@@ -266,54 +263,30 @@ tbody tr:nth-child(odd) td:not(:first-child) {
 	background-color: #fff;
 }
 
-@media screen and (max-width: 956px) {
+@media (max-width: 1080px) {
+	.favoritesTitle {
+		font-size: 30px;
+	}
+
+	td,
+	th {
+		padding: 10px 8px;
+		font-size: 14px;
+	}
+
+	.apartment-comparison {
+		padding: 0 60px;
+	}
+}
+
+@media (max-width: 768px) {
 	.favoritesTitle {
 		font-size: 28px;
 	}
 
-	.table {
-		margin: 0;
-		height: 100%;
-	}
-
-	.comparison-container {
-		max-width: 900px;
-	}
-
-	.comparison-header h2 {
-		font-size: 26px;
-	}
-}
-
-@media screen and (max-width: 768px) {
-	.comparison-container {
-		max-width: 100%;
-		padding: 0 15px;
-	}
-
-	.comparison-header {
-		align-items: center;
-		margin-bottom: 12px;
-	}
-
-	.comparison-header h2 {
-		font-size: 24px;
-		text-align: center;
-	}
-
-	.table {
-		overflow-x: auto;
-	}
-}
-
-@media screen and (max-width: 600px) {
-	.comparison-header h2 {
-		font-size: 22px;
-	}
-
-	.image-cover {
-		min-height: 100px;
-		max-height: 100px;
+	.apartment-comparison {
+		overflow-x: scroll;
+		padding: 0 20px 20px;
 	}
 
 	td,
@@ -321,16 +294,32 @@ tbody tr:nth-child(odd) td:not(:first-child) {
 		padding: 8px 10px;
 		font-size: 12px;
 	}
+
+	.table {
+		height: 100%;
+		max-width: fit-content;
+	}
 }
 
-@media screen and (max-width: 480px) {
-	.comparison-header h2 {
-		font-size: 20px;
+@media (max-width: 480px) {
+	.favoritesTitle {
+		font-size: 24px;
+	}
+
+	.apartment-comparison {
+		padding: 0 10px 20px;
 	}
 
 	.image-cover {
-		min-height: 80px;
-		max-height: 80px;
+		min-width: 100px;
+		min-height: 100px;
+		max-width: 100px;
+		max-height: 100px;
+	}
+
+	td,
+	th {
+		font-size: 10px;
 	}
 }
 </style>

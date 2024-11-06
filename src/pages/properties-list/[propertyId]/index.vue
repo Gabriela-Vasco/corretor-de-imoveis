@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+import { definePageMeta } from "#imports";
 import Property from "@/app/properties-list/property";
 
 definePageMeta({

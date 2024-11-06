@@ -1,3 +1,4 @@
+import { defineStore } from "pinia";
 import { useCookie } from "nuxt/app";
 import { ref } from "vue";
 import { useSnackbarStore } from "./snackbar";

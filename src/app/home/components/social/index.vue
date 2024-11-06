@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useQuotesStore } from "@/store/quotes";
 import { useScreen } from "@/composables/useScreen";
 

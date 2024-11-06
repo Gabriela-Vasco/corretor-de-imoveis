@@ -1,6 +1,7 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
 import { type Property } from "~/types/Property";
+import { defineEventHandler } from "#imports";
 
 export default defineEventHandler(async (event) => {
 	const credentials = JSON.parse(process.env.GCP_CREDENTIALS);
@@ -48,6 +49,7 @@ export default defineEventHandler(async (event) => {
 			.get("related_properties")
 			.split(",")
 			.map((item: string) => item.trim()),
+		maps: row.get("maps"),
 	})) as Property[];
 
 	return {

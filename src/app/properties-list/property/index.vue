@@ -323,7 +323,7 @@
 
 		<VideoModal v-model="openVideoDialog" />
 
-		<MapModal v-model="openMapDialog" />
+		<MapModal v-model="openMapDialog" :map="currentProperty?.map" />
 	</div>
 </template>
 
@@ -380,6 +380,8 @@ onMounted(async () => {
 	currentProperty.value = await propertiesStore.getPropertyByCode(
 		currentPropertyId.value,
 	);
+
+	console.log(currentProperty.value, "currentProperty");
 
 	const { infrastructure, images } = currentProperty.value;
 

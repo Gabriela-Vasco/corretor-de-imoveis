@@ -1,5 +1,15 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="1200px">
+		<v-btn
+			v-if="isMobile"
+			icon="mdi-close-thick"
+			color="primary"
+			variant="flat"
+			size="small"
+			class="mt-3 mr-3"
+			style="position: absolute; top: 0; right: 0; z-index: 9999"
+			@click="model = false"
+		/>
 		<v-sheet height="auto" style="overflow-x: hidden">
 			<div class="mb-5">
 				<v-img
@@ -80,7 +90,7 @@ import { ref, nextTick, computed, watch } from "vue";
 import { animate } from "motion";
 import { useScreen } from "@/composables/useScreen";
 
-const { isXMobile, windowWidth } = useScreen();
+const { isXMobile, isMobile, windowWidth } = useScreen();
 
 const props = defineProps({
 	propertyImages: { type: Array, default: () => [] },

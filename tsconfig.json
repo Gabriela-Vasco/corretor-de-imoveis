@@ -10,7 +10,12 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@nuxt/types", "@types/node"],
+    "types": [
+      "@nuxt/types",
+      "@types/node",
+      "@nuxt/vue-app",
+      "@nuxtjs/vuetify"
+    ],
 
     // Alias configuration
     "baseUrl": ".",  // Set the base directory

@@ -1,5 +1,14 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="auto">
+		<v-btn
+			v-if="isMobile"
+			icon="mdi-close-thick"
+			color="white"
+			variant="flat"
+			size="small"
+			style="position: absolute; top: 0; right: 0; z-index: 9999"
+			@click="model = false"
+		/>
 		<v-sheet style="overflow: hidden">
 			<v-snackbar
 				v-model="showLandscapeMessage"

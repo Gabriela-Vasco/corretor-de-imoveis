@@ -1,6 +1,7 @@
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 import { createVuetify, type ThemeDefinition } from "vuetify";
-import * as components from "vuetify/components";
-import * as directives from "vuetify/directives";
+import { defineNuxtPlugin } from "#imports";
 
 const myCustomTheme: ThemeDefinition = {
 	colors: {
@@ -22,8 +23,6 @@ const myCustomTheme: ThemeDefinition = {
 export default defineNuxtPlugin((app) => {
 	const vuetify = createVuetify({
 		ssr: true,
-		components,
-		directives,
 		theme: {
 			defaultTheme: "myCustomTheme",
 			themes: {

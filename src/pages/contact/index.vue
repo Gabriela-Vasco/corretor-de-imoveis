@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+import { definePageMeta } from "#imports";
 import Contact from "@/app/contact";
 
 definePageMeta({

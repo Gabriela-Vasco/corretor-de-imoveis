@@ -1,11 +1,33 @@
-import { resolve } from "path";
 import { defineNuxtConfig } from "nuxt/config";
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 export default defineNuxtConfig({
-	srcDir: "src/",
-	compatibilityDate: "2024-04-03",
-	components: true,
 	devtools: { enabled: true },
+	srcDir: "src/",
+	ssr: false,
+
+	imports: {
+		autoImport: false,
+	},
+
+	build: {
+		transpile: ["vuetify"],
+	},
+
+	css: [
+		"vuetify/lib/styles/main.sass",
+		"@mdi/font/css/materialdesignicons.css",
+		"@/assets/css/main.css",
+	],
+
+	app: {
+		baseURL: process.env.BASE_URL,
+		head: {
+			title: "Lelis Magno Imóveis",
+			charset: "utf-8",
+			viewport: "width=device-width, initial-scale=1",
+		},
+	},
 
 	runtimeConfig: {
 		public: {
@@ -13,29 +35,22 @@ export default defineNuxtConfig({
 		},
 	},
 
-	alias: {
-		"~": resolve(__dirname, "src"),
-		"@": resolve(__dirname, "src"),
-		"~~": resolve(__dirname, "."),
-		"@@": resolve(__dirname, "."),
-		assets: resolve(__dirname, "src/assets"),
-		public: resolve(__dirname, "src/public"),
-		css: resolve(__dirname, "src/assets/css"),
-	},
-
-	app: {
-		baseURL: process.env.BASE_URL,
-	},
-
-	css: [
-		"vuetify/lib/styles/main.sass",
-		"@mdi/font/css/materialdesignicons.css",
-		"@/assets/css/main.css", // Use '@' for path resolution
+	modules: [
+		(_options, nuxt) => {
+			nuxt.hooks.hook("vite:extendConfig", (config) => {
+				config.plugins.push(vuetify({ autoImport: true }));
+			});
+		},
+		"@pinia/nuxt",
 	],
 
-	build: {
-		transpile: ["vuetify"],
+	vite: {
+		vue: {
+			template: {
+				transformAssetUrls,
+			},
+		},
 	},
 
-	modules: ["@pinia/nuxt"],
+	compatibilityDate: "2024-04-03",
 });

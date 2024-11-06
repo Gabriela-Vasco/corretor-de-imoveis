@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, watch } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 import { animate } from "motion";
 import { useRouter } from "vue-router";
 import { usePropertiesStore } from "@/store/properties";

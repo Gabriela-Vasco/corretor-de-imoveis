@@ -308,4 +308,10 @@ function goToProperty(code: string) {
 		font-size: 28px;
 	}
 }
+
+@media (max-width: 480px) {
+	.listTitle {
+		font-size: 24px;
+	}
+}
 </style>

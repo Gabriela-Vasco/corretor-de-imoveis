@@ -18,9 +18,10 @@
     "nuxt": "^3.13.0",
     "pinia": "^2.2.4",
     "sass": "^1.79.5",
+    "vite-plugin-vuetify": "^2.0.4",
     "vue": "latest",
     "vue-router": "latest",
-    "vuetify": "^3.7.0-beta.1"
+    "vuetify": "^3.7.3"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",

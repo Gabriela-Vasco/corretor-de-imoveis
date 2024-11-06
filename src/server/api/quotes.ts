@@ -1,5 +1,6 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
+import { defineEventHandler } from "#imports";
 
 interface QuoteRow {
 	message: string;
