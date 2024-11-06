@@ -38,10 +38,13 @@ export default defineNuxtConfig({
 	modules: [
 		(_options, nuxt) => {
 			nuxt.hooks.hook("vite:extendConfig", (config) => {
-				config.plugins.push(vuetify({ autoImport: true }));
+				if (config.plugins) {
+					config.plugins.push(vuetify({ autoImport: true }));
+				}
 			});
 		},
 		"@pinia/nuxt",
+		"@nuxtjs/leaflet",
 	],
 
 	vite: {

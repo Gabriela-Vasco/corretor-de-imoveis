@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/leaflet": "^1.2.4",
     "@pinia/nuxt": "^0.5.5",
     "axios": "^1.7.7",
     "google-auth-library": "^9.14.2",
