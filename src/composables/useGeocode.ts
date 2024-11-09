@@ -1,13 +1,9 @@
 export async function getCoordinates(address: string) {
-	const url =
-		"https://nominatim.openstreetmap.org/search?addressdetails=1&q=bakery+in+berlin+wedding&format=jsonv2&limit=1";
-	// const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&addressdetails=1`;
+	const url = `https://nominatim.openstreetmap.org/search?q=${address}&format=json`;
 
 	try {
 		const response = await fetch(url);
-		console.log(response);
 		const data = await response.json();
-		console.log(data);
 
 		if (data && data.length > 0) {
 			return {

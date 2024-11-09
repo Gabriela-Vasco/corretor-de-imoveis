@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 			.get("related_properties")
 			.split(",")
 			.map((item: string) => item.trim()),
-		maps: row.get("maps"),
+		address: row.get("address"),
 	})) as Property[];
 
 	return {

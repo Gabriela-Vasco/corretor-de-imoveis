@@ -323,7 +323,7 @@
 
 		<VideoModal v-model="openVideoDialog" />
 
-		<MapModal v-model="openMapDialog" :map="currentProperty?.map" />
+		<MapModal v-model="openMapDialog" :address="currentProperty?.address" />
 	</div>
 </template>
 

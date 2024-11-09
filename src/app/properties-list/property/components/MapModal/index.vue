@@ -1,56 +1,85 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="1000px" :fullscreen="isXMobile">
-		<v-sheet
-			class="pa-5"
-			color="light"
-			:height="isXMobile ? '100%' : ''"
-			:class="isXMobile ? 'd-flex flex-column align-end' : ''"
-		>
-			<LMap
+		<div v-if="loading" class="d-flex align-center justify-center">
+			<v-progress-circular indeterminate size="x-large" color="white" />
+		</div>
+		<div v-else>
+			<v-sheet
 				v-if="coordinates"
-				ref="map"
-				:zoom="zoom"
-				:center="[coordinates.lat, coordinates.lon]"
-				style="height: 800px; width: 100%"
-				use-global-leaflet
+				class="pa-5"
+				color="light"
+				:height="isXMobile ? '100%' : ''"
+				:class="isXMobile ? 'd-flex flex-column align-end' : ''"
 			>
-				<LTileLayer
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-					attribution='&amp;copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-					layer-type="base"
-					name="OpenStreetMap"
-				/>
+				<LMap
+					ref="map"
+					:zoom="zoom"
+					:center="[coordinates.lat, coordinates.lon]"
+					style="height: 800px; width: 100%"
+					use-global-leaflet
+				>
+					<LTileLayer
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+						attribution='&amp;copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+						layer-type="base"
+						name="OpenStreetMap"
+					/>
 
-				<LMarker :lat-lng="[coordinates.lat, coordinates.lon]">
-					<LPopup>{{ address }}</LPopup>
-				</LMarker>
-			</LMap>
-			<p v-else>Loading map...</p>
-		</v-sheet>
+					<LMarker :lat-lng="[coordinates.lat, coordinates.lon]">
+						<LPopup class="popup">{{ address }}</LPopup>
+					</LMarker>
+				</LMap>
+			</v-sheet>
+			<v-sheet v-else>
+				<NoContent class="mx-auto" headline="Nenhum mapa encontrado" size="250" />
+			</v-sheet>
+		</div>
 	</v-dialog>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref, watch } from "vue";
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 import { useScreen } from "@/composables/useScreen";
 import { getCoordinates } from "@/composables/useGeocode";
 
+const props = defineProps({
+	address: { type: String, default: "" },
+});
+
 const { isXMobile } = useScreen();
 
 const model = defineModel<boolean>();
-const zoom = ref(6);
+const zoom = ref(20);
 const map = ref(null);
-const address = "123 Main St, Anytown, USA";
 const coordinates = ref<{ lat: number; lon: number } | null>(null);
+const loading = ref(false);
 
-onMounted(async () => {
-	const coords = await getCoordinates(address);
-	console.log(coords);
-	if (coords) {
-		coordinates.value = coords;
-	}
-});
+watch(
+	() => props.address,
+	async (newVal) => {
+		if (!newVal) {
+			return;
+		}
+		loading.value = true;
+
+		const addressFormatted = formatAddress(newVal);
+		const coords = await getCoordinates(addressFormatted);
+		if (coords) {
+			coordinates.value = coords;
+		}
+
+		loading.value = false;
+	},
+);
+
+function formatAddress(address: string) {
+	return address.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, "+");
+}
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.popup {
+	font-weight: 700;
+}
+</style>
