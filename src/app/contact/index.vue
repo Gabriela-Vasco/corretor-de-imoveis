@@ -5,7 +5,7 @@
 	>
 		<div class="d-flex flex-column align-center w-100">
 			<h2 class="contactTitle">Envie uma mensagem</h2>
-			<v-form ref="form" class="d-flex flex-column align-center w-100">
+			<form ref="form" class="d-flex flex-column align-center w-100">
 				<v-text-field
 					v-model="name"
 					label="Nome"
@@ -59,7 +59,7 @@
 						Enviar
 					</v-btn>
 				</div>
-			</v-form>
+			</form>
 		</div>
 		<v-divider
 			:vertical="!isMobile"
@@ -91,6 +91,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import emailjs from "@emailjs/browser";
+import { useRuntimeConfig } from "nuxt/app";
 import { useScreen } from "@/composables/useScreen";
 
 const { isMobile } = useScreen();
@@ -100,14 +102,42 @@ const email = ref<string>("");
 const phone = ref<string>("");
 const message = ref<string>("");
 const form = ref<HTMLFormElement | null>(null);
+const config = useRuntimeConfig();
 
 function submitForm() {
+	const data = {
+		name: name.value,
+		email: email.value,
+		phone: phone.value,
+		message: message.value,
+	};
+	sendEmail(data);
+
 	name.value = "";
 	email.value = "";
 	phone.value = "";
 	message.value = "";
 
 	form.value?.reset();
+}
+
+function sendEmail(data) {
+	console.log(form.value);
+	const service = config.public.emailjs_service;
+	const template = config.public.emailjs_template;
+	const key = config.public.emailjs_key;
+	console.log(service, template, key);
+
+	if (service && template && key) {
+		emailjs.sendForm(service, template, form.value, key).then(
+			(result) => {
+				console.log(result.text + "Email enviado com sucesso!");
+			},
+			(error) => {
+				console.log(error);
+			},
+		);
+	}
 }
 </script>
 

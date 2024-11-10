@@ -1,9 +1,16 @@
 <template>
 	<v-dialog v-model="model" opacity="0.7" width="1000px" :fullscreen="isXMobile">
-		<div v-if="loading" class="d-flex align-center justify-center">
-			<v-progress-circular indeterminate size="x-large" color="white" />
-		</div>
-		<div v-else>
+		<div>
+			<v-btn
+				v-if="isXMobile"
+				icon="mdi-close-thick"
+				color="primary"
+				variant="flat"
+				class="mt-2 mr-2"
+				size="small"
+				style="position: absolute; top: 0; right: 0; z-index: 9999"
+				@click="model = false"
+			/>
 			<v-sheet
 				v-if="coordinates"
 				class="pa-5"
@@ -30,21 +37,18 @@
 					</LMarker>
 				</LMap>
 			</v-sheet>
-			<v-sheet v-else>
-				<NoContent class="mx-auto" headline="Nenhum mapa encontrado" size="250" />
-			</v-sheet>
 		</div>
 	</v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 import { useScreen } from "@/composables/useScreen";
-import { getCoordinates } from "@/composables/useGeocode";
 
-const props = defineProps({
+defineProps({
 	address: { type: String, default: "" },
+	coordinates: { type: Object, default: null },
 });
 
 const { isXMobile } = useScreen();
@@ -52,30 +56,6 @@ const { isXMobile } = useScreen();
 const model = defineModel<boolean>();
 const zoom = ref(20);
 const map = ref(null);
-const coordinates = ref<{ lat: number; lon: number } | null>(null);
-const loading = ref(false);
-
-watch(
-	() => props.address,
-	async (newVal) => {
-		if (!newVal) {
-			return;
-		}
-		loading.value = true;
-
-		const addressFormatted = formatAddress(newVal);
-		const coords = await getCoordinates(addressFormatted);
-		if (coords) {
-			coordinates.value = coords;
-		}
-
-		loading.value = false;
-	},
-);
-
-function formatAddress(address: string) {
-	return address.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, "+");
-}
 </script>
 
 <style scoped lang="scss">

@@ -32,6 +32,9 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			cmf_token: process.env.NUXT_CMF_TOKEN,
+			emailjs_service: process.env.NUXT_EMAILJS_SERVICE,
+			emailjs_template: process.env.NUXT_EMAILJS_TEMPLATE,
+			emailjs_key: process.env.NUXT_EMAILJS_PUBLIC_KEY,
 		},
 	},
 

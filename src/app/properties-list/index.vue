@@ -174,8 +174,6 @@ onMounted(async () => {
 	} finally {
 		loading.value = false;
 	}
-
-	console.log("propertiesList", propertiesStore.propertiesList);
 });
 
 const drawer = ref(false);

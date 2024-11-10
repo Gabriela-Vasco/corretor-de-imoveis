@@ -259,7 +259,7 @@
 							<p>Vídeo</p>
 						</div>
 
-						<div class="d-flex flex-column align-center">
+						<div v-if="coordinates" class="d-flex flex-column align-center">
 							<v-btn
 								color="primary"
 								:size="isMobile ? '70px' : '90px'"
@@ -323,12 +323,17 @@
 
 		<VideoModal v-model="openVideoDialog" />
 
-		<MapModal v-model="openMapDialog" :address="currentProperty?.address" />
+		<MapModal
+			v-if="coordinates"
+			v-model="openMapDialog"
+			:address="currentProperty?.address"
+			:coordinates="coordinates"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, watch } from "vue";
+import { ref, computed, nextTick, onMounted, watch, Prop } from "vue";
 import { useCookie } from "nuxt/app";
 import { animate } from "motion";
 import { useRoute, useRouter } from "vue-router";
@@ -339,12 +344,13 @@ import VideoModal from "./components/VideoModal/index.vue";
 import MapModal from "./components/MapModal/index.vue";
 import { type Property } from "@/types";
 import { useScreen } from "@/composables/useScreen";
+import { getCoordinates } from "@/composables/useGeocode";
 
 const { isMobile, windowWidth } = useScreen();
 
 const propertiesStore = usePropertiesStore();
 const currentPropertyId = ref<string | null>(null);
-const currentProperty = ref();
+const currentProperty = ref<Property>();
 const route = useRoute();
 const router = useRouter();
 
@@ -359,6 +365,7 @@ const openPhotoDialog = ref(false);
 const openVideoDialog = ref(false);
 const openMapDialog = ref(false);
 const firstImage = ref<string>();
+const coordinates = ref<{ lat: number; lon: number } | null>(null);
 
 const visibleCount = computed(() => {
 	if (windowWidth.value <= 956) return 1;
@@ -381,9 +388,7 @@ onMounted(async () => {
 		currentPropertyId.value,
 	);
 
-	console.log(currentProperty.value, "currentProperty");
-
-	const { infrastructure, images } = currentProperty.value;
+	const { infrastructure, images, address } = currentProperty.value;
 
 	if (infrastructure) {
 		infrastructureItems.value = infrastructure;
@@ -396,6 +401,14 @@ onMounted(async () => {
 
 	if (images) {
 		propertyImages.value = images.split(",");
+	}
+
+	if (address) {
+		const addressFormatted = formatAddress(address);
+		const coords = await getCoordinates(addressFormatted);
+		if (coords) {
+			coordinates.value = coords;
+		}
 	}
 });
 
@@ -417,7 +430,7 @@ const visibleProperties = computed(() => {
 	);
 });
 
-const relatedProperties = computed(() => {
+const relatedProperties = computed<Property[]>(() => {
 	if (currentProperty.value) {
 		const { related_properties } = currentProperty.value;
 		return propertiesStore.propertiesList.filter((property: Property) => {
@@ -503,6 +516,10 @@ function goToProperty(code: string) {
 function handleOpenPhotoDialog(image: string) {
 	openPhotoDialog.value = true;
 	firstImage.value = image;
+}
+
+function formatAddress(address: string) {
+	return address.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, "+");
 }
 </script>
 
