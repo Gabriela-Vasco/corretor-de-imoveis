@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@datocms/cda-client": "^0.2.2",
     "@emailjs/browser": "^4.4.1",
     "@nuxtjs/leaflet": "^1.2.4",
     "@pinia/nuxt": "^0.5.5",

@@ -148,12 +148,36 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { executeQuery } from "@datocms/cda-client";
 import { usePropertiesStore } from "../../store/properties";
 import { type FilterConditions, Property } from "@/types";
 import NoContent from "@/components/NoContent";
 import SearchBar from "@/app/properties-list/components/search-bar";
 import PropertyCard from "@/components/PropertyCard";
 import { useScreen } from "@/composables/useScreen";
+
+const query = `
+  query {
+	allProperties {
+		id,
+		title,
+		description,
+		neighborhood,
+		imageCover {
+			url
+		},
+		images {
+			url
+		}
+	}
+	}
+`;
+
+const result = await executeQuery(query, {
+	token: "b7d5b5fe3807821633cf4a80a4ae67",
+});
+
+console.log(result);
 
 const { isMobile, isXMobile } = useScreen();
 
