@@ -3,7 +3,7 @@
 		<div
 			class="d-flex flex-column fill-height justify-center align-end text-white titleContainer"
 		>
-			<h1 class="text-dark font-weight-bold montserrat-title mainTitle">
+			<h1 class="text-dark font-weight-bold roboto-title mainTitle">
 				LELIS MAGNO IMÓVEIS
 			</h1>
 			<v-divider color="dark" class="border-opacity-75 w-100" :thickness="2" />

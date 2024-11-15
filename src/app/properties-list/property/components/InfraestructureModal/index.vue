@@ -3,7 +3,7 @@
 		<div>
 			<div class="fit-content mb-10" style="width: 500px; max-width: 90%">
 				<h3
-					class="montserrat-title font-weight-medium modalTitle"
+					class="roboto-title font-weight-medium modalTitle"
 					:class="isMobile ? '' : 'ml-10'"
 				>
 					Infraestrutura e outras características

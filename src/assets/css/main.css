@@ -6,12 +6,12 @@
 }
 
 body {
-    font-family: "Roboto Slab", serif; 
+    font-family: "Montserrat", serif; 
     overflow-x: hidden
 }
 
-.montserrat-title {
-    font-family: 'Montserrat', serif;
+.roboto-title {
+    font-family: 'Roboto Slab', serif;
 }
 
 

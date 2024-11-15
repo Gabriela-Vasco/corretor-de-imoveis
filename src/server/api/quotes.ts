@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
 	await doc.loadInfo();
 
-	const sheet = doc.sheetsByIndex[1];
+	const sheet = doc.sheetsByIndex[2];
 	const rows = await sheet.getRows();
 
 	const quotes = rows.map((row) => ({

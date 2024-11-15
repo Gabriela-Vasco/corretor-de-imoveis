@@ -65,7 +65,7 @@
 				<span>Cód: {{ currentProperty?.code }}</span>
 			</div>
 			<div class="d-flex justify-space-between align-center my-3">
-				<h2 class="montserrat-title font-weight-medium">
+				<h2 class="roboto-title font-weight-medium">
 					{{ currentProperty?.title }}
 				</h2>
 				<v-btn
@@ -95,19 +95,19 @@
 				{{ currentProperty?.description }}
 			</p>
 
-			<h3 class="montserrat-title font-weight-medium mb-2">
+			<h3 class="roboto-title font-weight-medium mb-2">
 				{{ currentProperty?.neighborhood }} - Florianópolis/SC
 			</h3>
-			<h4 class="montserrat-title font-weight-medium mb-5">
+			<h4 class="roboto-title font-weight-medium mb-5">
 				R$
 				{{ formatCurrency(currentProperty?.price) }}
 			</h4>
 			<div class="d-flex ga-3">
-				<v-chip class="montserrat-title font-weight-medium" color="primary">
+				<v-chip class="roboto-title font-weight-medium" color="primary">
 					Imóvel {{ currentProperty?.property_type?.toLowerCase() }}
 				</v-chip>
 
-				<v-chip class="montserrat-title font-weight-medium" color="primary">
+				<v-chip class="roboto-title font-weight-medium" color="primary">
 					{{
 						currentProperty?.sale_or_rent === "Venda"
 							? `Imóvel à ${currentProperty?.sale_or_rent?.toLowerCase()}`
@@ -177,7 +177,7 @@
 				<div>
 					<div class="fit-content">
 						<h3
-							class="montserrat-title font-weight-medium mr-5"
+							class="roboto-title font-weight-medium mr-5"
 							:style="isMobile ? 'font-size: 20px' : 'font-size: 22px'"
 						>
 							Infraestrutura e outras características
@@ -212,7 +212,7 @@
 				<div class="fit-content" :class="isMobile ? '' : 'mx-auto'">
 					<div class="fit-content">
 						<h3
-							class="montserrat-title font-weight-medium mr-5"
+							class="roboto-title font-weight-medium mr-5"
 							:style="isMobile ? 'font-size: 20px' : 'font-size: 22px'"
 						>
 							Detalhes
@@ -282,10 +282,7 @@
 				class="d-flex flex-column align-center"
 				:class="isMobile ? 'mt-16' : 'mt-120'"
 			>
-				<h2
-					class="montserrat-title font-weight-medium mr-5"
-					style="font-size: 24px"
-				>
+				<h2 class="roboto-title font-weight-medium mr-5" style="font-size: 24px">
 					Imóveis relacionados
 				</h2>
 				<v-divider
@@ -324,16 +321,15 @@
 		<VideoModal v-model="openVideoDialog" />
 
 		<MapModal
-			v-if="coordinates"
 			v-model="openMapDialog"
 			:address="currentProperty?.address"
-			:coordinates="coordinates"
+			:maps="currentProperty?.maps"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, watch, Prop } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { useCookie } from "nuxt/app";
 import { animate } from "motion";
 import { useRoute, useRouter } from "vue-router";
@@ -400,7 +396,7 @@ onMounted(async () => {
 	}
 
 	if (images) {
-		propertyImages.value = images.split(",");
+		propertyImages.value = images;
 	}
 
 	if (address) {

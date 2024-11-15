@@ -17,7 +17,7 @@
 					isXMobile ? 'width: 100%' : isMobile ? 'width: 90%' : 'width: 750px'
 				"
 			>
-				<h2 class="font-weight-regular listTitle">
+				<h2 class="font-weight-regular listTitle roboto-title">
 					Imóveis
 					{{
 						propertiesList.length === 0
@@ -173,11 +173,11 @@ const query = `
 	}
 `;
 
-const result = await executeQuery(query, {
-	token: "b7d5b5fe3807821633cf4a80a4ae67",
-});
+// const result = await executeQuery(query, {
+// 	token: "b7d5b5fe3807821633cf4a80a4ae67",
+// });
 
-console.log(result);
+// console.log(result);
 
 const { isMobile, isXMobile } = useScreen();
 

@@ -15,7 +15,7 @@
 		</div>
 		<div v-else>
 			<div v-if="visibleProperties.length">
-				<h3 class="featuredTitle text-center">Imóveis em destaque</h3>
+				<h3 class="featuredTitle roboto-title text-center">Imóveis em destaque</h3>
 				<div class="d-flex align-center justify-center py-2 mainConteiner">
 					<v-btn
 						v-if="featuredProperties.length > visibleCount"

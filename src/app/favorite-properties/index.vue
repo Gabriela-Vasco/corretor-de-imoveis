@@ -5,7 +5,9 @@
 			:class="isMobile ? 'justify-start mb-10' : 'mb-16 justify-center'"
 			:style="isMobile || isTablet ? 'width: fit-content' : 'width: 652px'"
 		>
-			<h2 class="font-weight-regular favoritesTitle">Compare até 3 imóveis</h2>
+			<h2 class="font-weight-regular favoritesTitle roboto-title">
+				Compare até 3 imóveis
+			</h2>
 			<v-divider color="dark" class="border-opacity-75 w-100" :thickness="1" />
 		</div>
 		<div v-if="favoritedProperties.length" class="table">

@@ -8,7 +8,7 @@
 		"
 		class="d-flex flex-column justify-center footer"
 	>
-		<h3 class="text-white font-weight-bold montserrat-title align-self-start">
+		<h3 class="text-white font-weight-bold roboto-title align-self-start">
 			LELIS MAGNO IMÓVEIS
 		</h3>
 		<div class="d-flex align-start justify-space-between w-100 mt-4">

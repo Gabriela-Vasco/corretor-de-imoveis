@@ -1,10 +1,10 @@
 <template>
-	<div class="bg-light pb-5">
+	<div class="bg-white pb-5">
 		<div v-if="loading">
 			<v-skeleton-loader
 				class="mx-auto py-10"
 				height="300"
-				color="light"
+				color="white"
 				width="60%"
 				type="list-item-two-line"
 			/>
@@ -17,7 +17,7 @@
 				:show-arrows="false"
 				hide-delimiter-background
 				color="dark"
-				class="bg-light"
+				class="bg-white"
 			>
 				<v-carousel-item
 					v-for="(quote, i) in quotesList"
@@ -25,7 +25,7 @@
 					class="mx-auto"
 					:class="isMobile ? 'w-100  px-8' : 'w-66  px-5'"
 				>
-					<v-sheet color="light" height="100%">
+					<v-sheet color="white" height="100%">
 						<div
 							class="d-flex flex-column fill-height justify-center align-center"
 							:class="isMobile ? 'mx-0' : 'mx-auto'"
@@ -33,7 +33,7 @@
 							<p class="mb-4 quoteText">
 								{{ quote.message }}
 							</p>
-							<p class="mb-5">{{ quote.author }}</p>
+							<p class="mb-5 roboto-title">{{ quote.author }}</p>
 						</div>
 					</v-sheet>
 				</v-carousel-item>

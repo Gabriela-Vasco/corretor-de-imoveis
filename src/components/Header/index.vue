@@ -4,7 +4,7 @@
 		:class="isMobile ? 'px-4' : 'px-8'"
 	>
 		<nuxt-link
-			class="text-secondary font-weight-bold montserrat-title title font-weight-bold"
+			class="text-secondary font-weight-bold roboto-title title font-weight-bold"
 			to="/"
 		>
 			LELIS MAGNO IMÓVEIS

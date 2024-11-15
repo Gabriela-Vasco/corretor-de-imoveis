@@ -4,7 +4,7 @@
 		:class="isMobile ? 'flex-column align-center' : 'align-start'"
 	>
 		<div class="d-flex flex-column align-center w-100">
-			<h2 class="contactTitle">Envie uma mensagem</h2>
+			<h2 class="contactTitle roboto-title">Envie uma mensagem</h2>
 			<v-form
 				ref="form"
 				v-model="valid"
@@ -77,7 +77,7 @@
 			:thickness="2"
 		/>
 		<div class="d-flex flex-column align-center w-100">
-			<h2 class="contactTitle">Informações de contato</h2>
+			<h2 class="contactTitle roboto-title">Informações de contato</h2>
 			<div class="d-flex flex-column align-start mt-8 ga-4 contactContent">
 				<p>Lelis Magno da Silva | CRECI 0000-X-SC</p>
 				<p>

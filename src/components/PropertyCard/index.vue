@@ -1,13 +1,12 @@
 <template>
-	<v-card width="320px" class="pa-0">
+	<v-card
+		width="320px"
+		class="pa-0"
+		elevation="3"
+		style="box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px"
+	>
 		<div class="coverImage">
-			<v-img
-				:src="props.featuredProperty.image_cover"
-				:alt="props.featuredProperty.title"
-				min-height="250px"
-				max-height="250px"
-				cover
-			/>
+			<v-img :src="props.featuredProperty.image_cover" alt="Test Image" />
 
 			<v-btn
 				class="btnFavorite mt-2 mr-2"
@@ -33,10 +32,10 @@
 		</div>
 		<div class="pa-5">
 			<h3 class="card-title mb-auto">{{ props.featuredProperty.title }}</h3>
-			<p class="montserrat-title">
+			<p class="roboto-title">
 				{{ props.featuredProperty.neighborhood }}
 			</p>
-			<p class="montserrat-title my-3">
+			<p class="roboto-title my-3">
 				R$ {{ formatCurrency(props.featuredProperty.price) }}
 			</p>
 			<div class="d-flex align-end justify-space-between">
@@ -72,12 +71,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { usePropertiesStore } from "../../store/properties";
 
 const props = defineProps({
 	featuredProperty: { type: Object, default: () => {} },
 });
 const propertiesStore = usePropertiesStore();
+
+console.log(props.featuredProperty);
 
 function formatCurrency(price: string) {
 	return Number(price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
