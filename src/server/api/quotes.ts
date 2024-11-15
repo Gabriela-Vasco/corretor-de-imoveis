@@ -27,8 +27,8 @@ export default defineEventHandler(async (event) => {
 	const rows = await sheet.getRows();
 
 	const quotes = rows.map((row) => ({
-		message: row.get("message"),
-		author: row.get("author"),
+		message: row.get("Mensagem"),
+		author: row.get("Autor"),
 	})) as QuoteRow[];
 
 	return {
