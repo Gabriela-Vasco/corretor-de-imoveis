@@ -1,5 +1,5 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
-import { GoogleAuth, JWT } from "google-auth-library";
+import { JWT } from "google-auth-library";
 import { google } from "googleapis";
 import { type Property } from "~/types/Property";
 import { defineEventHandler } from "#imports";
@@ -17,8 +17,6 @@ export default defineEventHandler(async (event) => {
 		"1swyogtXPH075ea0ruNEzT23e5CYSNOoAcZz2ySLgavI",
 		serviceAccountAuth,
 	);
-
-	
 
 	const oauth2Client = new google.auth.OAuth2(
 		CLIENT_ID,
