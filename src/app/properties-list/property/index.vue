@@ -76,9 +76,7 @@
 				>
 					<v-icon :size="isMobile ? '35px' : '48px'" color="secondary-darken-1">
 						{{
-							propertiesStore.favoritedProperties?.find(
-								(fav) => fav.code === currentPropertyId,
-							)
+							favoritedProperties?.find((fav) => fav.code === currentPropertyId)
 								? "mdi-heart"
 								: "mdi-heart-outline"
 						}}
@@ -118,52 +116,59 @@
 
 			<div
 				style="border: 1px solid black"
+				class="d-flex justify-center align-center"
 				:class="
 					isMobile
 						? 'd-flex flex-column align-center mt-16'
-						: 'px-10 fit-content mt-16'
+						: 'px-0 fit-content mt-16'
 				"
 			>
 				<div class="infoList w-100" :class="isMobile ? 'py-6' : 'px-16 py-12 '">
-					<span :style="isMobile ? 'grid-area: total_area' : ''"
-						><strong>Área total</strong> {{ currentProperty?.total_area }}</span
+					<span class="text-no-wrap" :style="isMobile ? 'grid-area: total_area' : ''"
+						><strong>Área total</strong>
+						{{ formatFootage(currentProperty?.total_area) }}</span
 					>
 					<span
-						class="d-flex align-center ga-2"
+						class="d-flex align-center ga-2 text-no-wrap"
 						:style="isMobile ? 'grid-area: bedrooms' : ''"
 					>
 						<v-icon>mdi-bed-double-outline</v-icon>
 						{{ currentProperty?.bedrooms }} dormitórios</span
 					>
 					<span
-						class="d-flex align-center ga-2"
+						class="d-flex align-center ga-2 text-no-wrap"
 						:style="isMobile ? 'grid-area: garages' : ''"
 					>
 						<v-icon>mdi-car</v-icon> {{ currentProperty?.garage }}
 						{{ currentProperty?.garage === 1 ? "vaga" : "vagas" }} de garagem</span
 					>
-					<span :style="isMobile ? 'grid-area: condominium' : ''"
+					<span
+						class="text-no-wrap"
+						:style="isMobile ? 'grid-area: condominium' : ''"
 						><strong>Condomínio</strong> R$
 						{{ formatCurrency(currentProperty?.condominium_price) }}</span
 					>
-					<span :style="isMobile ? 'grid-area: living_area' : ''"
-						><strong>Área privativa</strong> {{ currentProperty?.private_area }}</span
+					<span
+						class="text-no-wrap"
+						:style="isMobile ? 'grid-area: living_area' : ''"
+						><strong>Área privativa</strong>
+						{{ formatFootage(currentProperty?.private_area) }}</span
 					>
 					<span
-						class="d-flex align-center ga-2"
+						class="d-flex align-center ga-2 text-no-wrap"
 						:style="isMobile ? 'grid-area: bathrooms' : ''"
 					>
 						<v-icon>mdi-toilet</v-icon>
 						{{ currentProperty?.bathrooms }} banheiros</span
 					>
 					<span
-						class="d-flex align-center ga-2"
+						class="d-flex align-center ga-2 text-no-wrap"
 						:style="isMobile ? 'grid-area: suites' : ''"
 					>
 						<v-icon>mdi-shower-head</v-icon>
 						{{ currentProperty?.suites }} suítes</span
 					>
-					<span :style="isMobile ? 'grid-area: iptu' : ''"
+					<span class="text-no-wrap" :style="isMobile ? 'grid-area: iptu' : ''"
 						><strong>IPTU</strong> R$
 						{{ formatCurrency(currentProperty?.IPTU) }}</span
 					>
@@ -259,7 +264,7 @@
 							<p>Vídeo</p>
 						</div>
 
-						<div v-if="coordinates" class="d-flex flex-column align-center">
+						<div v-if="addressFormatted" class="d-flex flex-column align-center">
 							<v-btn
 								color="primary"
 								:size="isMobile ? '70px' : '90px'"
@@ -318,12 +323,16 @@
 			:first-image="firstImage"
 		/>
 
-		<VideoModal v-model="openVideoDialog" />
+		<VideoModal
+			v-if="currentProperty?.video"
+			v-model="openVideoDialog"
+			:video="currentProperty?.video"
+		/>
 
 		<MapModal
+			v-if="addressFormatted"
 			v-model="openMapDialog"
-			:address="currentProperty?.address"
-			:maps="currentProperty?.maps"
+			:address-formatted="addressFormatted"
 		/>
 	</div>
 </template>
@@ -340,7 +349,6 @@ import VideoModal from "./components/VideoModal/index.vue";
 import MapModal from "./components/MapModal/index.vue";
 import { type Property } from "@/types";
 import { useScreen } from "@/composables/useScreen";
-import { getCoordinates } from "@/composables/useGeocode";
 
 const { isMobile, windowWidth } = useScreen();
 
@@ -361,7 +369,11 @@ const openPhotoDialog = ref(false);
 const openVideoDialog = ref(false);
 const openMapDialog = ref(false);
 const firstImage = ref<string>();
-const coordinates = ref<{ lat: number; lon: number } | null>(null);
+const addressFormatted = ref<string | null>(null);
+
+const favoritedProperties = computed<Property[]>(
+	() => propertiesStore.favoritedProperties,
+);
 
 const visibleCount = computed(() => {
 	if (windowWidth.value <= 956) return 1;
@@ -400,11 +412,7 @@ onMounted(async () => {
 	}
 
 	if (address) {
-		const addressFormatted = formatAddress(address);
-		const coords = await getCoordinates(addressFormatted);
-		if (coords) {
-			coordinates.value = coords;
-		}
+		addressFormatted.value = formatAddress(address);
 	}
 });
 
@@ -517,6 +525,12 @@ function handleOpenPhotoDialog(image: string) {
 function formatAddress(address: string) {
 	return address.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, "+");
 }
+
+function formatFootage(footage: string) {
+	const number = Number(footage);
+
+	return `${number?.toLocaleString("pt-BR")} m²` || `${footage} m²`;
+}
 </script>
 
 <style scoped lang="scss">
@@ -525,7 +539,7 @@ function formatAddress(address: string) {
 	grid-template-columns: repeat(4, 1fr);
 	gap: 30px 80px;
 	max-width: 90%;
-	overflow-x: scroll;
+	overflow-x: hidden;
 }
 .list {
 	display: grid;

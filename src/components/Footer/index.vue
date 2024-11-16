@@ -14,12 +14,12 @@
 		<div class="d-flex align-start justify-space-between w-100 mt-4">
 			<div class="d-flex flex-column ga-2">
 				<p>© Copyright 2024 - Todos os direitos reservados</p>
-				<p>CRECI 0000-X-SC</p>
-				<p>(48) 99999-9999</p>
-				<p>lelismagno@imoveis.com</p>
+				<p>CRECI {{ creci }}</p>
+				<p>{{ phone_number }}</p>
+				<p>{{ email }}</p>
 				<p class="d-flex align-center ga-2">
 					<v-icon size="16px">mdi-instagram</v-icon>
-					lelismagnoimoveis
+					{{ instagram }}
 				</p>
 			</div>
 
@@ -42,9 +42,33 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { useScreen } from "@/composables/useScreen";
+import { usePersonalInfoStore } from "@/store/personalInfo";
 
 const { isMobile, isXMobile } = useScreen();
+const personalInfoStore = usePersonalInfoStore();
+const phone_number = ref();
+const email = ref();
+const instagram = ref();
+const creci = ref();
+
+const loading = ref(false);
+
+onMounted(async () => {
+	try {
+		loading.value = true;
+		await personalInfoStore.loadData();
+		phone_number.value = personalInfoStore.personalInfoList[0].phone_number;
+		email.value = personalInfoStore.personalInfoList[0].email;
+		instagram.value = personalInfoStore.personalInfoList[0].instagram;
+		creci.value = personalInfoStore.personalInfoList[0].creci;
+	} catch (e) {
+		console.error(e);
+	} finally {
+		loading.value = false;
+	}
+});
 </script>
 
 <style lang="scss" scoped>

@@ -191,11 +191,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { usePropertiesStore } from "../../store/properties";
+import { Property } from "@/types";
 import { useScreen } from "@/composables/useScreen";
 
 const { isMobile, isTablet } = useScreen();
 const propertiesStore = usePropertiesStore();
-const favoritedProperties = computed(() => propertiesStore.favoritedProperties);
+const favoritedProperties = computed<Property[]>(
+	() => propertiesStore.favoritedProperties,
+);
 
 function formatCurrency(price: string) {
 	return (

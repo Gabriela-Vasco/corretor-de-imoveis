@@ -93,7 +93,7 @@ import { useScreen } from "@/composables/useScreen";
 const { isXMobile, isMobile, windowWidth } = useScreen();
 
 const props = defineProps({
-	propertyImages: { type: Array, default: () => [] },
+	propertyImages: { type: Array<string>, default: () => [] },
 	firstImage: { type: String, default: "" },
 });
 

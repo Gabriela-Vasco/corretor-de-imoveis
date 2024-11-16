@@ -35,6 +35,10 @@ export default defineNuxtConfig({
 			emailjs_service: process.env.NUXT_EMAILJS_SERVICE,
 			emailjs_template: process.env.NUXT_EMAILJS_TEMPLATE,
 			emailjs_key: process.env.NUXT_EMAILJS_PUBLIC_KEY,
+			google_drive_client_id: process.env.GOOGLE_DRIVE_CLIENT_ID,
+			google_drive_client_secret: process.env.GOOGLE_DRIVE_CLIENT_SECRET,
+			google_drive_redirect_uri: process.env.GOOGLE_DRIVE_REDIRECT_URI,
+			google_drive_refresh_token: process.env.GOOGLE_DRIVE_REFRESH_TOKEN,
 		},
 	},
 
@@ -47,7 +51,6 @@ export default defineNuxtConfig({
 			});
 		},
 		"@pinia/nuxt",
-		"@nuxtjs/leaflet",
 	],
 
 	vite: {

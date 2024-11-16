@@ -79,18 +79,18 @@
 		<div class="d-flex flex-column align-center w-100">
 			<h2 class="contactTitle roboto-title">Informações de contato</h2>
 			<div class="d-flex flex-column align-start mt-8 ga-4 contactContent">
-				<p>Lelis Magno da Silva | CRECI 0000-X-SC</p>
+				<p>Lelis Magno da Silva | CRECI {{ creci }}</p>
 				<p>
 					<v-icon size="small">mdi-whatsapp</v-icon>
-					(48) 99999-9999
+					{{ phone_number }}
 				</p>
 				<p>
 					<v-icon size="small">mdi-email-outline</v-icon>
-					lelismagno@imoveis.com
+					{{ personal_email }}
 				</p>
 				<p>
 					<v-icon size="small">mdi-instagram</v-icon>
-					lelismagnoimoveis
+					{{ instagram }}
 				</p>
 			</div>
 		</div>
@@ -98,14 +98,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { send } from "@emailjs/browser";
 import { useRuntimeConfig } from "nuxt/app";
 import { useScreen } from "@/composables/useScreen";
 import { useRules } from "@/composables/useRules";
+import { usePersonalInfoStore } from "@/store/personalInfo";
 
 const { isMobile } = useScreen();
 const rules = useRules();
+
+const personalInfoStore = usePersonalInfoStore();
+const phone_number = computed(
+	() => personalInfoStore.personalInfoList?.[0]?.phone_number,
+);
+const personal_email = computed(
+	() => personalInfoStore.personalInfoList?.[0]?.email,
+);
+const instagram = computed(
+	() => personalInfoStore.personalInfoList?.[0]?.instagram,
+);
+const creci = computed(() => personalInfoStore.personalInfoList?.[0]?.creci);
 
 const name = ref<string>("");
 const email = ref<string>("");
@@ -124,7 +137,7 @@ async function submitForm() {
 		form.value?.reset();
 		form.value?.resetValidation();
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	} finally {
 		loading.value = false;
 	}
@@ -158,7 +171,7 @@ async function sendEmail(
 			await send(service, template, { message: messageData }, key);
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 }
 

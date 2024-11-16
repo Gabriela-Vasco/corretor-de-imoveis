@@ -18,7 +18,7 @@
 			>
 				<v-icon>
 					{{
-						propertiesStore.favoritedProperties?.find(
+						favoritedProperties?.find(
 							(fav) => fav.code === props.featuredProperty.code,
 						)
 							? "mdi-heart"
@@ -73,11 +73,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { usePropertiesStore } from "../../store/properties";
+import { type Property } from "@/types";
 
 const props = defineProps({
 	featuredProperty: { type: Object, default: () => {} },
 });
 const propertiesStore = usePropertiesStore();
+const favoritedProperties = computed<Property[]>(
+	() => propertiesStore.favoritedProperties,
+);
 
 console.log(props.featuredProperty);
 
