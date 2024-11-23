@@ -83,8 +83,6 @@ const favoritedProperties = computed<Property[]>(
 	() => propertiesStore.favoritedProperties,
 );
 
-console.log(props.featuredProperty);
-
 function formatCurrency(price: string) {
 	return Number(price).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }

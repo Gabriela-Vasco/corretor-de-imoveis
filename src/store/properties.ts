@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useCookie } from "nuxt/app";
 import { ref } from "vue";
 import { useSnackbarStore } from "./snackbar";
+import { useAppStore } from "./app";
 
 export const usePropertiesStore = defineStore("properties", {
 	state: () => ({
@@ -14,6 +15,8 @@ export const usePropertiesStore = defineStore("properties", {
 	actions: {
 		async loadData() {
 			try {
+				useAppStore().showLoader();
+
 				const response = await fetch("/api/properties");
 				if (!response.ok) {
 					throw new Error("Failed to fetch properties.");
@@ -22,6 +25,8 @@ export const usePropertiesStore = defineStore("properties", {
 				this.propertiesList = properties;
 			} catch (error) {
 				console.error("Error loading data:", error);
+			} finally {
+				useAppStore().hideLoader();
 			}
 		},
 

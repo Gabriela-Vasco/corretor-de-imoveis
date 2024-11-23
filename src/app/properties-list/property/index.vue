@@ -1,5 +1,13 @@
 <template>
 	<div>
+		<Head>
+			<Title>{{ currentProperty?.title }}</Title>
+			<Meta name="description" :content="currentProperty?.description" />
+			<Meta property="og:title" :content="currentProperty?.title" />
+			<Meta property="og:description" :content="currentProperty?.description" />
+			<Meta property="og:image" :content="firstImage" />
+			<Meta property="og:url" :content="fullUrl" />
+		</Head>
 		<div
 			v-if="visibleProperties.length"
 			class="d-flex align-center justify-center w-100 py-2 imageCarousel"
@@ -200,7 +208,8 @@
 							:key="index"
 							:title="item"
 							prepend-icon="mdi-circle-small"
-							class="px-0"
+							class="px-0 text-no-wrap"
+							min-width="fit-content"
 						></v-list-item>
 					</v-list>
 					<v-btn
@@ -339,7 +348,7 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, watch } from "vue";
-import { useCookie } from "nuxt/app";
+import { useCookie, useRuntimeConfig } from "nuxt/app";
 import { animate } from "motion";
 import { useRoute, useRouter } from "vue-router";
 import { usePropertiesStore } from "../../../store/properties";
@@ -357,6 +366,7 @@ const currentPropertyId = ref<string | null>(null);
 const currentProperty = ref<Property>();
 const route = useRoute();
 const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
 
 const visibleInfraestructureItems = ref([]);
 const infrastructureItems = ref<String[]>([]);
@@ -370,6 +380,10 @@ const openVideoDialog = ref(false);
 const openMapDialog = ref(false);
 const firstImage = ref<string>();
 const addressFormatted = ref<string | null>(null);
+
+const fullUrl = computed(() => {
+	return `${runtimeConfig.public.siteUrl || runtimeConfig.public.localStorage}${route.fullPath}`;
+});
 
 const favoritedProperties = computed<Property[]>(
 	() => propertiesStore.favoritedProperties,
@@ -546,6 +560,7 @@ function formatFootage(footage: string) {
 	grid-template-rows: repeat(2, 1fr);
 	grid-template-columns: repeat(3, 1fr);
 	gap: 0 30px;
+	white-space: nowrap;
 }
 
 .mainContent {

@@ -1,6 +1,5 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
-import { google } from "googleapis";
 import { type Property } from "~/types/Property";
 import { defineEventHandler } from "#imports";
 
@@ -18,69 +17,23 @@ export default defineEventHandler(async (event) => {
 		serviceAccountAuth,
 	);
 
-	const CLIENT_ID = process.env.CLIENT_ID;
-	const CLIENT_SECRET = process.env.CLIENT_SECRET;
-	const REDIRECT_URI = process.env.REDIRECT_URI;
-	const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-
-	const oauth2Client = new google.auth.OAuth2(
-		CLIENT_ID,
-		CLIENT_SECRET,
-		REDIRECT_URI,
-	);
-
-	oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-	const drive = google.drive({
-		version: "v3",
-		auth: oauth2Client,
-	});
-
-	async function formatImageCover(image: string): Promise<string> {
+	function formatImageCover(image: string) {
 		const fileId = image.split("=")[1];
-		await drive.permissions.create({
-			fileId,
-			requestBody: {
-				role: "reader",
-				type: "anyone",
-			},
-		});
-		const res = await drive.files.get({
-			fileId,
-			fields: "webViewLink",
-		});
 
-		const webViewLink = res.data.webViewLink || "";
-		const imageId = webViewLink.split("/d/")[1]?.split("/view")[0];
-
-		return imageId
-			? `https://drive.google.com/thumbnail?id=${imageId}&sz=w1000`
+		return fileId
+			? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`
 			: "";
 	}
 
-	async function formatImages(images: string): Promise<string[]> {
+	async function formatImages(images: string) {
 		try {
 			const arrayImages = images.split(",").map((item: string) => item.trim());
 			const formattedImages = await Promise.all(
-				arrayImages.map(async (image) => {
+				arrayImages.map((image) => {
 					const fileId = image.split("=")[1];
-					await drive.permissions.create({
-						fileId,
-						requestBody: {
-							role: "reader",
-							type: "anyone",
-						},
-					});
-					const res = await drive.files.get({
-						fileId,
-						fields: "webViewLink",
-					});
 
-					const webViewLink = res.data.webViewLink || "";
-					const imageId = webViewLink.split("/d/")[1]?.split("/view")[0];
-
-					return imageId
-						? `https://drive.google.com/thumbnail?id=${imageId}&sz=w1000`
+					return fileId
+						? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`
 						: "";
 				}),
 			);
