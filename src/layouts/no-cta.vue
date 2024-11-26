@@ -4,6 +4,7 @@
 		<NuxtPage />
 		<section class="mt-auto">
 			<Footer />
+			<FloatingButton />
 		</section>
 		<Snackbar
 			v-model="snackbarStore.showSnackbar"
@@ -19,6 +20,7 @@ import { computed } from "vue";
 import Snackbar from "@/components/Snackbar/index.vue";
 import { useSnackbarStore } from "@/store/snackbar";
 import { useAppStore } from "@/store/app";
+import FloatingButton from "@/components/FloatingButton/index.vue";
 
 const snackbarStore = useSnackbarStore();
 const appStore = useAppStore();
