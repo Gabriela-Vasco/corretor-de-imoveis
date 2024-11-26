@@ -5,6 +5,13 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	srcDir: "src/",
 	ssr: false,
+	nitro: {
+		preset: "cloudflare",
+		output: {
+			publicDir: "./dist/public",
+			serverDir: "./dist/server",
+		},
+	},
 
 	imports: {
 		autoImport: false,
