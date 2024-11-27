@@ -82,7 +82,6 @@ export default defineNuxtConfig({
 			});
 		},
 		"@pinia/nuxt",
-		"@nuxthub/core",
 	],
 
 	vite: {
@@ -91,6 +90,9 @@ export default defineNuxtConfig({
 				transformAssetUrls,
 			},
 		},
+	},
+	nitro: {
+		preset: "vercel",
 	},
 
 	compatibilityDate: "2024-04-03",
